@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sriov-test2
+  namespace: default
+  annotations:
+    k8s.v1.cni.cncf.io/networks: |
+      network-cx7-eno5np0,
+      network-cx7-eno6np0,
+      network-cx7-eno7np0,
+      network-cx7-eno8np0
+spec:
+  containers:
+  - name: sriov-test2
+    image: quay.io/edge-infrastructure/nvidia-tools:0.1.5
+    volumeMounts:
+    - name: podinfo
+      mountPath: /etc/podinfo
+      readOnly: true
+    resources:
+      limits:
+        nvidia.com/gpu: 4
+        openshift.io/cx7_eno5: 1
+        openshift.io/cx7_eno6: 1
+        openshift.io/cx7_eno7: 1
+        openshift.io/cx7_eno8: 1
+      requests:
+        nvidia.com/gpu: 4
+        openshift.io/cx7_eno5: 1
+        openshift.io/cx7_eno6: 1
+        openshift.io/cx7_eno7: 1
+        openshift.io/cx7_eno8: 1
+  volumes:
+  - name: podinfo
+    downwardAPI:
+      items:
+        - path: "annotations"
+          fieldRef: 
+            fieldPath: metadata.annotations
+
