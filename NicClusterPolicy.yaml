@@ -6,7 +6,7 @@ spec:
   ofedDriver:
     image: doca-driver
     repository: nvcr.io/nvidia/mellanox
-    version: 25.01-0.6.0.0-0
+    version: doca3.2.0-25.10-1.2.8.0-2
     env:
       - name: UNLOAD_STORAGE_MODULES
         value: 'true'
