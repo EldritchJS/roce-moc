@@ -1,0 +1,244 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: mft-diagnostics
+  namespace: nccl-test
+  annotations:
+    description: "MFT and RDMA diagnostics pod for Mellanox NICs"
+    tags: "networking,diagnostics,mellanox,rdma"
+parameters:
+- name: NODE_NAME
+  description: "Node name to run the diagnostics pod on"
+  required: true
+  # Default value (optional)
+  # value: moc-r4pcc04u23-nairr
+objects:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    name: mft-diagnostics
+    namespace: nccl-test
+    labels:
+      app: mft-diagnostics
+      node: ${NODE_NAME}
+  spec:
+    nodeName: ${NODE_NAME}
+    hostIPC: true
+    hostNetwork: true
+    hostPID: true
+    containers:
+    - name: mft-diagnostics
+      image: nvcr.io/nvidia/pytorch:24.12-py3
+      command: ["/bin/bash", "-c"]
+      args:
+      - |
+        set -x
+        echo "=========================================="
+        echo "MFT and RDMA Diagnostics Pod"
+        echo "Node: $(hostname)"
+        echo "Target Node: ${NODE_NAME}"
+        echo "=========================================="
+
+        # ====================================================
+        # Install Mellanox Firmware Tools (MFT) and RDMA Tools
+        # ====================================================
+        echo ""
+        echo "=== Installing Mellanox Firmware Tools (MFT) and RDMA Diagnostics ==="
+
+        # Update package list
+        apt-get update -qq
+
+        # Install dependencies and RDMA tools
+        echo "Installing InfiniBand diagnostics and RDMA tools..."
+        apt-get install -y -qq wget pciutils infiniband-diags rdma-core libibverbs-dev ibverbs-utils
+
+        # Download and install MFT
+        MFT_VERSION="4.28.0-83"
+        MFT_PACKAGE="mft-${MFT_VERSION}-x86_64-deb.tgz"
+        MFT_URL="https://www.mellanox.com/downloads/MFT/${MFT_PACKAGE}"
+
+        echo "Downloading MFT ${MFT_VERSION}..."
+        wget -q ${MFT_URL} -O /tmp/${MFT_PACKAGE} || {
+          echo "Warning: Could not download MFT from official source"
+          echo "Trying alternate method..."
+          apt-get install -y -qq mft || echo "MFT not available via apt"
+        }
+
+        if [ -f /tmp/${MFT_PACKAGE} ]; then
+          cd /tmp
+          tar xzf ${MFT_PACKAGE}
+          cd mft-${MFT_VERSION}-x86_64-deb
+          ./install.sh --without-dkms
+
+          # Start MFT service
+          mst start
+
+          echo "✓ MFT installed and started successfully"
+        else
+          echo "Warning: MFT installation failed, trying to start existing installation"
+          mst start 2>/dev/null || echo "MFT not available"
+        fi
+
+        # ====================================================
+        # Display System Information
+        # ====================================================
+        echo ""
+        echo "=========================================="
+        echo "System Information"
+        echo "=========================================="
+        echo "Hostname: $(hostname)"
+        echo "Kernel: $(uname -r)"
+        echo "Date: $(date)"
+
+        # ====================================================
+        # Display Mellanox NIC and RDMA Information
+        # ====================================================
+        echo ""
+        echo "=========================================="
+        echo "Mellanox NIC Information"
+        echo "=========================================="
+
+        # List PCI Mellanox devices
+        echo ""
+        echo "=== Mellanox PCI Devices ==="
+        lspci | grep -i mellanox || echo "No Mellanox devices found via lspci"
+
+        # List MST devices
+        echo ""
+        echo "=== MST Devices ==="
+        if command -v mst &> /dev/null; then
+          mst status -v || echo "Could not get MST status"
+        else
+          echo "✗ mst command not available"
+        fi
+
+        # ====================================================
+        # RDMA/InfiniBand Information
+        # ====================================================
+        echo ""
+        echo "=========================================="
+        echo "RDMA/InfiniBand Information"
+        echo "=========================================="
+
+        # IB device to network mapping
+        echo ""
+        echo "=== IB Device to Network Interface Mapping ==="
+        if command -v ibdev2netdev &> /dev/null; then
+          ibdev2netdev || echo "Could not run ibdev2netdev"
+        else
+          echo "✗ ibdev2netdev not available"
+        fi
+
+        # RDMA devices list
+        echo ""
+        echo "=== RDMA Devices ==="
+        if command -v ibv_devinfo &> /dev/null; then
+          ibv_devinfo -l || echo "No RDMA devices found"
+        else
+          echo "✗ ibv_devinfo not available"
+        fi
+
+        # IB port status
+        echo ""
+        echo "=== IB Port Status ==="
+        if command -v ibstat &> /dev/null; then
+          ibstat || echo "Could not get IB status"
+        else
+          echo "✗ ibstat not available"
+        fi
+
+        # InfiniBand devices from /dev
+        echo ""
+        echo "=== InfiniBand Devices in /dev ==="
+        ls -la /dev/infiniband/ 2>/dev/null || echo "No /dev/infiniband directory"
+
+        # RDMA devices from /sys
+        echo ""
+        echo "=== RDMA Devices in /sys ==="
+        ls -la /sys/class/infiniband/ 2>/dev/null || echo "No /sys/class/infiniband directory"
+
+        # Network interfaces
+        echo ""
+        echo "=== Network Interfaces (Mellanox) ==="
+        for iface in $(ls /sys/class/net/); do
+          driver=$(readlink /sys/class/net/$iface/device/driver 2>/dev/null | xargs basename 2>/dev/null)
+          if [ "$driver" = "mlx5_core" ]; then
+            addr=$(cat /sys/class/net/$iface/address 2>/dev/null)
+            mtu=$(cat /sys/class/net/$iface/mtu 2>/dev/null)
+            state=$(cat /sys/class/net/$iface/operstate 2>/dev/null)
+            speed=$(cat /sys/class/net/$iface/speed 2>/dev/null || echo "unknown")
+            echo "  $iface: $addr (state: $state, speed: ${speed}Mb/s, mtu: $mtu)"
+          fi
+        done
+
+        # ====================================================
+        # Available Commands Summary
+        # ====================================================
+        echo ""
+        echo "=========================================="
+        echo "Available Diagnostic Tools"
+        echo "=========================================="
+        echo ""
+        echo "MFT (Mellanox Firmware Tools):"
+        echo "  mst status              - Show MST devices"
+        echo "  mlxconfig -d <dev> q    - Query firmware settings"
+        echo "  mlxconfig -d <dev> set  - Change firmware settings"
+        echo "  mstflint -d <dev> q     - Query firmware version"
+        echo ""
+        echo "RDMA/InfiniBand Diagnostics:"
+        echo "  ibdev2netdev            - Map IB devices to network interfaces"
+        echo "  ibstat                  - Show IB port status"
+        echo "  ibv_devinfo             - Show detailed RDMA device info"
+        echo "  ibv_devinfo -v          - Verbose RDMA device info"
+        echo "  perfquery               - Query IB performance counters"
+        echo ""
+        echo "Example Commands:"
+        echo "  oc exec -it mft-diagnostics -n nccl-test -- bash"
+        echo "  # mst status"
+        echo "  # ibdev2netdev"
+        echo "  # mlxconfig -d /dev/mst/mt4129_pciconf0 query"
+        echo "  # mlxconfig -d /dev/mst/mt4129_pciconf0 query | grep NUM_OF_VFS"
+        echo "  # ibv_devinfo mlx5_6"
+        echo ""
+        echo "=========================================="
+        echo "Pod Ready - Container will remain running"
+        echo "=========================================="
+
+        # Keep container running for interactive access
+        sleep infinity
+
+      env:
+      - name: NODE_NAME
+        value: ${NODE_NAME}
+
+      resources:
+        requests:
+          cpu: "2"
+          memory: "4Gi"
+        limits:
+          cpu: "4"
+          memory: "8Gi"
+
+      volumeMounts:
+      - name: dev
+        mountPath: /dev
+      - name: sys
+        mountPath: /sys
+
+      securityContext:
+        privileged: true
+        capabilities:
+          add:
+          - SYS_ADMIN
+          - SYS_RAWIO
+          - NET_ADMIN
+
+    volumes:
+    - name: dev
+      hostPath:
+        path: /dev
+    - name: sys
+      hostPath:
+        path: /sys
+
+    restartPolicy: Always
