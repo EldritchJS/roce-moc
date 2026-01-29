@@ -5,14 +5,21 @@ metadata:
   namespace: default
   annotations:
     k8s.v1.cni.cncf.io/networks: |
-      network-cx7-eno5np0,
-      network-cx7-eno6np0,
-      network-cx7-eno7np0,
-      network-cx7-eno8np0
+       eno5np0-network,
+       eno6np0-network,
+       eno7np0-network,
+       eno8np0-network
+#      network-cx7-eno5np0,
+#      network-cx7-eno6np0,
+#      network-cx7-eno7np0,
+#      network-cx7-eno8np0
 spec:
   containers:
   - name: sriov-test1
     image: quay.io/edge-infrastructure/nvidia-tools:0.1.5 
+    securityContext:
+      capabilities:
+        add: ["IPC_LOCK"] # Required for RDMA memory registration
     volumeMounts:
     - name: podinfo
       mountPath: /etc/podinfo
@@ -20,16 +27,24 @@ spec:
     resources:
       limits:
         nvidia.com/gpu: 4
-        openshift.io/cx7_eno5: 1
-        openshift.io/cx7_eno6: 1
-        openshift.io/cx7_eno7: 1
-        openshift.io/cx7_eno8: 1
+        openshift.io/eno5np0rdma: 1
+        openshift.io/eno6np0rdma: 1
+        openshift.io/eno7np0rdma: 1
+        openshift.io/eno8np0rdma: 1
+#        openshift.io/cx7_eno5: 1
+#        openshift.io/cx7_eno6: 1
+#        openshift.io/cx7_eno7: 1
+#        openshift.io/cx7_eno8: 1
       requests:
         nvidia.com/gpu: 4
-        openshift.io/cx7_eno5: 1
-        openshift.io/cx7_eno6: 1
-        openshift.io/cx7_eno7: 1
-        openshift.io/cx7_eno8: 1
+        openshift.io/eno5np0rdma: 1
+        openshift.io/eno6np0rdma: 1
+        openshift.io/eno7np0rdma: 1
+        openshift.io/eno8np0rdma: 1
+#        openshift.io/cx7_eno5: 1
+#        openshift.io/cx7_eno6: 1
+#        openshift.io/cx7_eno7: 1
+#        openshift.io/cx7_eno8: 1
   volumes:
   - name: podinfo
     downwardAPI:

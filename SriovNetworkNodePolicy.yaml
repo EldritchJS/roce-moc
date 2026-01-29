@@ -8,8 +8,8 @@ spec:
   nodeSelector:
     feature.node.kubernetes.io/network-sriov.capable: "true"
   priority: 10
-  numVfs: 4
   mtu: 9000
+  numVfs: 1
   nicSelector:
     pfNames:
       - eno5np0
@@ -29,8 +29,8 @@ spec:
   nodeSelector:
     feature.node.kubernetes.io/network-sriov.capable: "true"
   priority: 10
-  numVfs: 4
   mtu: 9000
+  numVfs: 1
   nicSelector:
     pfNames:
       - eno6np0
@@ -50,8 +50,8 @@ spec:
   nodeSelector:
     feature.node.kubernetes.io/network-sriov.capable: "true"
   priority: 10
-  numVfs: 4
   mtu: 9000
+  numVfs: 1
   nicSelector:
     pfNames:
       - eno7np0
@@ -71,8 +71,8 @@ spec:
   nodeSelector:
     feature.node.kubernetes.io/network-sriov.capable: "true"
   priority: 10
-  numVfs: 4 
   mtu: 9000
+  numVfs: 1
   nicSelector:
     pfNames:
       - eno8np0

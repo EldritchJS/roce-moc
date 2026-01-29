@@ -17,6 +17,9 @@ spec:
     - name: podinfo
       mountPath: /etc/podinfo
       readOnly: true
+    securityContext:
+      capabilities:
+        add: ["IPC_LOCK"]
     resources:
       limits:
         nvidia.com/gpu: 4
