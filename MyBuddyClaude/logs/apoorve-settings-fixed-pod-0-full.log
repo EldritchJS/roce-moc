@@ -1,0 +1,376 @@
+Starting OPTIMIZED PyTorch AllReduce Benchmark on pod pytorch-benchmark-opt-0
++ echo 'Starting OPTIMIZED PyTorch AllReduce Benchmark on pod pytorch-benchmark-opt-0'
++ export NODE_RANK=0
++ NODE_RANK=0
++ export NNODES=2
++ NNODES=2
++ export NPROC_PER_NODE=4
++ NPROC_PER_NODE=4
++ export MASTER_PORT=29501
++ MASTER_PORT=29501
++ '[' pytorch-benchmark-opt-0 = pytorch-benchmark-opt-0 ']'
++ export MASTER_ADDR=10.131.0.62
++ MASTER_ADDR=10.131.0.62
++ echo 'I am the master node (node_rank 0)'
++ echo 'NODE_RANK=0, NNODES=2, NPROC_PER_NODE=4'
++ echo 'MASTER_ADDR=10.131.0.62, MASTER_PORT=29501'
++ echo 'Total GPUs: 8'
++ echo '=== GPU Information ==='
++ nvidia-smi --query-gpu=index,name,memory.total --format=csv
+I am the master node (node_rank 0)
+NODE_RANK=0, NNODES=2, NPROC_PER_NODE=4
+MASTER_ADDR=10.131.0.62, MASTER_PORT=29501
+Total GPUs: 8
+=== GPU Information ===
+index, name, memory.total [MiB]
+0, NVIDIA H100 80GB HBM3, 81559 MiB
+1, NVIDIA H100 80GB HBM3, 81559 MiB
+2, NVIDIA H100 80GB HBM3, 81559 MiB
+3, NVIDIA H100 80GB HBM3, 81559 MiB
+=== RDMA Devices ===
++ echo '=== RDMA Devices ==='
++ ls -la /dev/infiniband/
+total 0
+drwxr-xr-x. 2 root root      220 Jan 29 16:47 .
+drwxr-xr-x. 6 root root      540 Jan 29 16:47 ..
+crw-rw-rw-. 1 root root  10, 123 Jan 29 16:47 rdma_cm
+crw-rw-rw-. 1 root root 231,  10 Jan 29 16:47 umad10
+crw-rw-rw-. 1 root root 231,  11 Jan 29 16:47 umad11
+crw-rw-rw-. 1 root root 231,   6 Jan 29 16:47 umad6
+crw-rw-rw-. 1 root root 231,   7 Jan 29 16:47 umad7
+crw-rw-rw-. 1 root root 231, 202 Jan 29 16:47 uverbs10
+crw-rw-rw-. 1 root root 231, 203 Jan 29 16:47 uverbs11
+crw-rw-rw-. 1 root root 231, 198 Jan 29 16:47 uverbs6
+crw-rw-rw-. 1 root root 231, 199 Jan 29 16:47 uverbs7
+=== SR-IOV Network Interfaces ===
++ echo '=== SR-IOV Network Interfaces ==='
++ for iface in net1 net2 net3 net4
++ '[' -e /sys/class/net/net1 ']'
+++ cat /sys/class/net/net1/address
+++ cat /sys/class/net/net1/mtu
+net1: 6a:51:5b:9d:a8:89 MTU=9000
++ echo 'net1: 6a:51:5b:9d:a8:89 MTU=9000'
++ for iface in net1 net2 net3 net4
++ '[' -e /sys/class/net/net2 ']'
+++ cat /sys/class/net/net2/address
+++ cat /sys/class/net/net2/mtu
+net2: 02:11:55:50:ec:53 MTU=9000
++ echo 'net2: 02:11:55:50:ec:53 MTU=9000'
++ for iface in net1 net2 net3 net4
++ '[' -e /sys/class/net/net3 ']'
+++ cat /sys/class/net/net3/address
+++ cat /sys/class/net/net3/mtu
+net3: f2:38:ac:7d:68:c8 MTU=9000
++ echo 'net3: f2:38:ac:7d:68:c8 MTU=9000'
++ for iface in net1 net2 net3 net4
++ '[' -e /sys/class/net/net4 ']'
+++ cat /sys/class/net/net4/address
+++ cat /sys/class/net/net4/mtu
++ echo 'net4: 56:8d:0d:82:69:87 MTU=9000'
+net4: 56:8d:0d:82:69:87 MTU=9000
+=== Optimized NCCL Environment ===
++ echo '=== Optimized NCCL Environment ==='
++ env
++ grep NCCL
++ sort
+AWS_OFI_NCCL_VERSION=1.12.1
+NCCL_ALGO=Ring
+NCCL_BUFFSIZE=67108864
+NCCL_DEBUG=INFO
+NCCL_DMABUF_ENABLE=0
+NCCL_IB_DISABLE=0
+NCCL_IB_GID_INDEX=3
+NCCL_IB_MERGE_NICS=0
+NCCL_IB_PCI_RELAXED_ORDERING=1
+NCCL_IB_QPS_PER_CONNECTION=2
+NCCL_IGNORE_CPU_AFFINITY=1
+NCCL_NET_GDR_LEVEL=1
+NCCL_VERSION=2.23.4
+Waiting for all pods to be ready...
++ echo 'Waiting for all pods to be ready...'
++ sleep 10
+=== Starting OPTIMIZED PyTorch Distributed Benchmark ===
++ echo '=== Starting OPTIMIZED PyTorch Distributed Benchmark ==='
++ torchrun --nnodes=2 --nproc_per_node=4 --node_rank=0 --master_addr=10.131.0.62 --master_port=29501 --rdzv_backend=c10d --rdzv_endpoint=10.131.0.62:29501 /benchmark/allreduce-loop.py --multiplier 1
+W0129 16:47:30.451000 39 torch/distributed/run.py:793] 
+W0129 16:47:30.451000 39 torch/distributed/run.py:793] *****************************************
+W0129 16:47:30.451000 39 torch/distributed/run.py:793] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0129 16:47:30.451000 39 torch/distributed/run.py:793] *****************************************
+NCCL version :  (2, 23, 4)
+ size(MB)   tavg(usec)    tmin(usec)    tmax(usec)  avgbw(GB/sec)  maxbw(GB/sec)  minbw(GB/sec)
+pytorch-benchmark-opt-0:107:107 [0] NCCL INFO Bootstrap : Using eth0:10.131.0.62<0>
+pytorch-benchmark-opt-0:107:107 [0] NCCL INFO cudaDriverVersion 13000
+pytorch-benchmark-opt-0:107:107 [0] NCCL INFO NCCL version 2.23.4+cuda12.6
+pytorch-benchmark-opt-0:108:108 [1] NCCL INFO cudaDriverVersion 13000
+pytorch-benchmark-opt-0:108:108 [1] NCCL INFO Bootstrap : Using eth0:10.131.0.62<0>
+pytorch-benchmark-opt-0:108:108 [1] NCCL INFO NCCL version 2.23.4+cuda12.6
+pytorch-benchmark-opt-0:109:109 [2] NCCL INFO cudaDriverVersion 13000
+pytorch-benchmark-opt-0:109:109 [2] NCCL INFO Bootstrap : Using eth0:10.131.0.62<0>
+pytorch-benchmark-opt-0:109:109 [2] NCCL INFO NCCL version 2.23.4+cuda12.6
+pytorch-benchmark-opt-0:110:110 [3] NCCL INFO cudaDriverVersion 13000
+pytorch-benchmark-opt-0:110:110 [3] NCCL INFO Bootstrap : Using eth0:10.131.0.62<0>
+pytorch-benchmark-opt-0:110:110 [3] NCCL INFO NCCL version 2.23.4+cuda12.6
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO Plugin Path : /opt/hpcx/nccl_rdma_sharp_plugin/lib/libnccl-net.so
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO P2P plugin v8 IBext_v8
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO NCCL_IB_MERGE_NICS set by environment to 0.
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO Plugin Path : /opt/hpcx/nccl_rdma_sharp_plugin/lib/libnccl-net.so
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO P2P plugin v8 IBext_v8
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO Plugin Path : /opt/hpcx/nccl_rdma_sharp_plugin/lib/libnccl-net.so
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO P2P plugin v8 IBext_v8
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO NCCL_IB_MERGE_NICS set by environment to 0.
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO NCCL_IB_MERGE_NICS set by environment to 0.
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO Plugin Path : /opt/hpcx/nccl_rdma_sharp_plugin/lib/libnccl-net.so
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO P2P plugin v8 IBext_v8
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO NCCL_IB_MERGE_NICS set by environment to 0.
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO NCCL_IB_PCI_RELAXED_ORDERING set by environment to 1.
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO NET/IB : Using [0]mlx5_6:1/RoCE [1]mlx5_7:1/RoCE [2]mlx5_10:1/RoCE [3]mlx5_11:1/RoCE [RO]; OOB eth0:10.131.0.62<0>
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO PROFILER/Plugin: Could not find: libnccl-profiler.so.
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO Using network IBext_v8
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO NCCL_IB_PCI_RELAXED_ORDERING set by environment to 1.
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO NET/IB : Using [0]mlx5_6:1/RoCE [1]mlx5_7:1/RoCE [2]mlx5_10:1/RoCE [3]mlx5_11:1/RoCE [RO]; OOB eth0:10.131.0.62<0>
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO NCCL_IB_PCI_RELAXED_ORDERING set by environment to 1.
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO NET/IB : Using [0]mlx5_6:1/RoCE [1]mlx5_7:1/RoCE [2]mlx5_10:1/RoCE [3]mlx5_11:1/RoCE [RO]; OOB eth0:10.131.0.62<0>
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO NCCL_IB_PCI_RELAXED_ORDERING set by environment to 1.
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO NET/IB : Using [0]mlx5_6:1/RoCE [1]mlx5_7:1/RoCE [2]mlx5_10:1/RoCE [3]mlx5_11:1/RoCE [RO]; OOB eth0:10.131.0.62<0>
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO PROFILER/Plugin: Could not find: libnccl-profiler.so.
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO Using network IBext_v8
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO PROFILER/Plugin: Could not find: libnccl-profiler.so.
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO Using network IBext_v8
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO PROFILER/Plugin: Could not find: libnccl-profiler.so.
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO Using network IBext_v8
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO NCCL_DMABUF_ENABLE set by environment to 0.
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO ncclCommInitRankConfig comm 0x8d339f0 rank 0 nranks 8 cudaDev 0 nvmlDev 0 busId 6000 commId 0xc311443b9ab1fb9b - Init START
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO NCCL_DMABUF_ENABLE set by environment to 0.
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO ncclCommInitRankConfig comm 0x8059a20 rank 1 nranks 8 cudaDev 1 nvmlDev 1 busId 26000 commId 0xc311443b9ab1fb9b - Init START
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO NCCL_DMABUF_ENABLE set by environment to 0.
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO ncclCommInitRankConfig comm 0x8bac090 rank 3 nranks 8 cudaDev 3 nvmlDev 3 busId c6000 commId 0xc311443b9ab1fb9b - Init START
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO NCCL_DMABUF_ENABLE set by environment to 0.
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO ncclCommInitRankConfig comm 0x7e87fa0 rank 2 nranks 8 cudaDev 2 nvmlDev 2 busId a6000 commId 0xc311443b9ab1fb9b - Init START
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO Bootstrap timings total 0.430020 (create 0.000098, send 0.000445, recv 0.127781, ring 0.001795, delay 0.000001)
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO Bootstrap timings total 0.287056 (create 0.000115, send 0.000233, recv 0.000593, ring 0.285689, delay 0.000001)
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO Bootstrap timings total 0.295049 (create 0.000121, send 0.000218, recv 0.000434, ring 0.284827, delay 0.000001)
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO Bootstrap timings total 0.302659 (create 0.000117, send 0.000250, recv 0.016016, ring 0.285327, delay 0.000001)
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO NCCL_NET_GDR_LEVEL set by environment to PIX
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO NCCL_IGNORE_CPU_AFFINITY set by environment to 1.
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO Setting affinity for GPU 3 to ffffffff,ffff0000,00000000,ffffffff,ffff0000,00000000
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO NVLS multicast support is not available on dev 3
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO NCCL_NET_GDR_LEVEL set by environment to PIX
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO NCCL_NET_GDR_LEVEL set by environment to PIX
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO NCCL_IGNORE_CPU_AFFINITY set by environment to 1.
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO Setting affinity for GPU 2 to ffffffff,ffff0000,00000000,ffffffff,ffff0000,00000000
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO NVLS multicast support is not available on dev 2
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO NCCL_IGNORE_CPU_AFFINITY set by environment to 1.
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO Setting affinity for GPU 0 to ffff,ffffffff,00000000,0000ffff,ffffffff
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO NVLS multicast support is not available on dev 0
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO NCCL_NET_GDR_LEVEL set by environment to PIX
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO NCCL_IGNORE_CPU_AFFINITY set by environment to 1.
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO Setting affinity for GPU 1 to ffff,ffffffff,00000000,0000ffff,ffffffff
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO NVLS multicast support is not available on dev 1
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO comm 0x7e87fa0 rank 2 nRanks 8 nNodes 2 localRanks 4 localRank 2 MNNVL 0
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO comm 0x8bac090 rank 3 nRanks 8 nNodes 2 localRanks 4 localRank 3 MNNVL 0
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO Trees [0] 3/-1/-1->2->1 [1] -1/-1/-1->2->3 [2] 3/6/-1->2->-1 [3] 1/-1/-1->2->3 [4] 3/-1/-1->2->1 [5] -1/-1/-1->2->3 [6] 3/-1/-1->2->6 [7] 1/-1/-1->2->3
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO NCCL_BUFFSIZE set by environment to 67108864.
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO P2P Chunksize set to 131072
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO Trees [0] -1/-1/-1->3->2 [1] 2/-1/-1->3->0 [2] 0/-1/-1->3->2 [3] 2/7/-1->3->-1 [4] -1/-1/-1->3->2 [5] 2/-1/-1->3->0 [6] 0/-1/-1->3->2 [7] 2/-1/-1->3->7
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO NCCL_BUFFSIZE set by environment to 67108864.
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO comm 0x8059a20 rank 1 nRanks 8 nNodes 2 localRanks 4 localRank 1 MNNVL 0
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO P2P Chunksize set to 131072
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO comm 0x8d339f0 rank 0 nRanks 8 nNodes 2 localRanks 4 localRank 0 MNNVL 0
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO Trees [0] 2/-1/-1->1->0 [1] 0/5/-1->1->-1 [2] -1/-1/-1->1->0 [3] 0/-1/-1->1->2 [4] 2/-1/-1->1->0 [5] 0/-1/-1->1->5 [6] -1/-1/-1->1->0 [7] 0/-1/-1->1->2
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO Channel 00/08 : 0 2 6 4 7 5 1 3
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO NCCL_BUFFSIZE set by environment to 67108864.
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO Channel 01/08 : 0 3 1 5 7 4 6 2
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO P2P Chunksize set to 131072
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO Channel 02/08 : 0 2 6 4 7 5 1 3
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO Channel 03/08 : 0 3 1 5 7 4 6 2
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO Channel 04/08 : 0 2 6 4 7 5 1 3
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO Channel 05/08 : 0 3 1 5 7 4 6 2
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO Channel 06/08 : 0 2 6 4 7 5 1 3
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO Channel 07/08 : 0 3 1 5 7 4 6 2
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO Trees [0] 1/4/-1->0->-1 [1] 3/-1/-1->0->1 [2] 1/-1/-1->0->3 [3] -1/-1/-1->0->1 [4] 1/-1/-1->0->4 [5] 3/-1/-1->0->1 [6] 1/-1/-1->0->3 [7] -1/-1/-1->0->1
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO NCCL_BUFFSIZE set by environment to 67108864.
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO P2P Chunksize set to 131072
+pytorch-benchmark-opt-0:109:152 [2] NCCL INFO [Proxy Service] Device 2 CPU core 60
+pytorch-benchmark-opt-0:107:155 [0] NCCL INFO [Proxy Service] Device 0 CPU core 102
+pytorch-benchmark-opt-0:110:153 [3] NCCL INFO [Proxy Service] Device 3 CPU core 155
+pytorch-benchmark-opt-0:109:156 [2] NCCL INFO [Proxy Service UDS] Device 2 CPU core 78
+pytorch-benchmark-opt-0:110:157 [3] NCCL INFO [Proxy Service UDS] Device 3 CPU core 188
+pytorch-benchmark-opt-0:108:154 [1] NCCL INFO [Proxy Service] Device 1 CPU core 8
+pytorch-benchmark-opt-0:107:159 [0] NCCL INFO [Proxy Service UDS] Device 0 CPU core 29
+pytorch-benchmark-opt-0:108:158 [1] NCCL INFO [Proxy Service UDS] Device 1 CPU core 141
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO NCCL_ALGO set by environment to Ring
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO threadThresholds 8/8/64 | 64/8/64 | 512 | 512
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO 8 coll channels, 8 collnet channels, 0 nvls channels, 8 p2p channels, 2 p2p channels per peer
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO NCCL_ALGO set by environment to Ring
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO threadThresholds 8/8/64 | 64/8/64 | 512 | 512
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO 8 coll channels, 8 collnet channels, 0 nvls channels, 8 p2p channels, 2 p2p channels per peer
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO NCCL_ALGO set by environment to Ring
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO threadThresholds 8/8/64 | 64/8/64 | 512 | 512
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO 8 coll channels, 8 collnet channels, 0 nvls channels, 8 p2p channels, 2 p2p channels per peer
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO NCCL_ALGO set by environment to Ring
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO threadThresholds 8/8/64 | 64/8/64 | 512 | 512
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO 8 coll channels, 8 collnet channels, 0 nvls channels, 8 p2p channels, 2 p2p channels per peer
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO CC Off, Multi-GPU CC Off, workFifoBytes 1048576
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO TUNER/Plugin: Failed to find ncclTunerPlugin_v3 symbol.
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO TUNER/Plugin: Failed to find ncclTunerPlugin_v2 symbol, using internal tuner instead.
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO TUNER/Plugin: Failed to find ncclTunerPlugin_v3 symbol.
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO TUNER/Plugin: Failed to find ncclTunerPlugin_v3 symbol.
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO ncclCommInitRankConfig comm 0x8059a20 rank 1 nranks 8 cudaDev 1 nvmlDev 1 busId 26000 commId 0xc311443b9ab1fb9b - Init COMPLETE
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO TUNER/Plugin: Failed to find ncclTunerPlugin_v2 symbol, using internal tuner instead.
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO TUNER/Plugin: Failed to find ncclTunerPlugin_v2 symbol, using internal tuner instead.
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO ncclCommInitRankConfig comm 0x7e87fa0 rank 2 nranks 8 cudaDev 2 nvmlDev 2 busId a6000 commId 0xc311443b9ab1fb9b - Init COMPLETE
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO ncclCommInitRankConfig comm 0x8bac090 rank 3 nranks 8 cudaDev 3 nvmlDev 3 busId c6000 commId 0xc311443b9ab1fb9b - Init COMPLETE
+pytorch-benchmark-opt-0:108:133 [1] NCCL INFO Init timings - ncclCommInitRankConfig: rank 1 nranks 8 total 2.58 (kernels 0.26, alloc 1.77, bootstrap 0.30, allgathers 0.04, topo 0.05, graphs 0.13, connections 0.02, rest 0.00)
+pytorch-benchmark-opt-0:109:134 [2] NCCL INFO Init timings - ncclCommInitRankConfig: rank 2 nranks 8 total 2.58 (kernels 0.25, alloc 1.79, bootstrap 0.29, allgathers 0.05, topo 0.04, graphs 0.13, connections 0.02, rest 0.00)
+pytorch-benchmark-opt-0:110:135 [3] NCCL INFO Init timings - ncclCommInitRankConfig: rank 3 nranks 8 total 2.57 (kernels 0.25, alloc 1.78, bootstrap 0.30, allgathers 0.04, topo 0.04, graphs 0.13, connections 0.02, rest 0.00)
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO TUNER/Plugin: Failed to find ncclTunerPlugin_v3 symbol.
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO TUNER/Plugin: Failed to find ncclTunerPlugin_v2 symbol, using internal tuner instead.
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO ncclCommInitRankConfig comm 0x8d339f0 rank 0 nranks 8 cudaDev 0 nvmlDev 0 busId 6000 commId 0xc311443b9ab1fb9b - Init COMPLETE
+pytorch-benchmark-opt-0:107:132 [0] NCCL INFO Init timings - ncclCommInitRankConfig: rank 0 nranks 8 total 2.59 (kernels 0.25, alloc 1.66, bootstrap 0.43, allgathers 0.00, topo 0.04, graphs 0.17, connections 0.02, rest 0.00)
+pytorch-benchmark-opt-0:108:161 [1] NCCL INFO Channel 00/0 : 1[1] -> 3[3] via P2P/CUMEM
+pytorch-benchmark-opt-0:107:162 [0] NCCL INFO Channel 00/0 : 0[0] -> 2[2] via P2P/CUMEM
+pytorch-benchmark-opt-0:108:161 [1] NCCL INFO Channel 02/0 : 1[1] -> 3[3] via P2P/CUMEM
+pytorch-benchmark-opt-0:108:161 [1] NCCL INFO Channel 04/0 : 1[1] -> 3[3] via P2P/CUMEM
+pytorch-benchmark-opt-0:107:162 [0] NCCL INFO Channel 02/0 : 0[0] -> 2[2] via P2P/CUMEM
+pytorch-benchmark-opt-0:108:161 [1] NCCL INFO Channel 06/0 : 1[1] -> 3[3] via P2P/CUMEM
+pytorch-benchmark-opt-0:107:162 [0] NCCL INFO Channel 04/0 : 0[0] -> 2[2] via P2P/CUMEM
+pytorch-benchmark-opt-0:107:162 [0] NCCL INFO Channel 06/0 : 0[0] -> 2[2] via P2P/CUMEM
+pytorch-benchmark-opt-0:107:162 [0] NCCL INFO Channel 01/0 : 0[0] -> 3[3] via P2P/CUMEM
+pytorch-benchmark-opt-0:107:162 [0] NCCL INFO Channel 03/0 : 0[0] -> 3[3] via P2P/CUMEM
+pytorch-benchmark-opt-0:107:162 [0] NCCL INFO Channel 05/0 : 0[0] -> 3[3] via P2P/CUMEM
+pytorch-benchmark-opt-0:107:162 [0] NCCL INFO Channel 07/0 : 0[0] -> 3[3] via P2P/CUMEM
+pytorch-benchmark-opt-0:110:163 [3] NCCL INFO Channel 00/0 : 3[3] -> 0[0] via P2P/CUMEM
+pytorch-benchmark-opt-0:110:163 [3] NCCL INFO Channel 02/0 : 3[3] -> 0[0] via P2P/CUMEM
+pytorch-benchmark-opt-0:110:163 [3] NCCL INFO Channel 04/0 : 3[3] -> 0[0] via P2P/CUMEM
+pytorch-benchmark-opt-0:110:163 [3] NCCL INFO Channel 06/0 : 3[3] -> 0[0] via P2P/CUMEM
+pytorch-benchmark-opt-0:110:163 [3] NCCL INFO Channel 01/0 : 3[3] -> 1[1] via P2P/CUMEM
+pytorch-benchmark-opt-0:110:163 [3] NCCL INFO Channel 03/0 : 3[3] -> 1[1] via P2P/CUMEM
+pytorch-benchmark-opt-0:110:163 [3] NCCL INFO Channel 05/0 : 3[3] -> 1[1] via P2P/CUMEM
+pytorch-benchmark-opt-0:110:163 [3] NCCL INFO Channel 07/0 : 3[3] -> 1[1] via P2P/CUMEM
+pytorch-benchmark-opt-0:109:164 [2] NCCL INFO [Proxy Progress] Device 2 CPU core 51
+pytorch-benchmark-opt-0:108:165 [1] NCCL INFO [Proxy Progress] Device 1 CPU core 12
+pytorch-benchmark-opt-0:109:160 [2] NCCL INFO Channel 01/0 : 6[2] -> 2[2] [receive] via NET/IBext_v8/3
+pytorch-benchmark-opt-0:108:161 [1] NCCL INFO Channel 00/0 : 5[1] -> 1[1] [receive] via NET/IBext_v8/0
+pytorch-benchmark-opt-0:109:160 [2] NCCL INFO Channel 03/0 : 6[2] -> 2[2] [receive] via NET/IBext_v8/3
+pytorch-benchmark-opt-0:108:161 [1] NCCL INFO Channel 02/0 : 5[1] -> 1[1] [receive] via NET/IBext_v8/0
+pytorch-benchmark-opt-0:109:160 [2] NCCL INFO Channel 05/0 : 6[2] -> 2[2] [receive] via NET/IBext_v8/3
+pytorch-benchmark-opt-0:108:161 [1] NCCL INFO Channel 04/0 : 5[1] -> 1[1] [receive] via NET/IBext_v8/0
+pytorch-benchmark-opt-0:109:160 [2] NCCL INFO Channel 07/0 : 6[2] -> 2[2] [receive] via NET/IBext_v8/3
+pytorch-benchmark-opt-0:109:160 [2] NCCL INFO Channel 00/0 : 2[2] -> 6[2] [send] via NET/IBext_v8/3
+pytorch-benchmark-opt-0:108:161 [1] NCCL INFO Channel 06/0 : 5[1] -> 1[1] [receive] via NET/IBext_v8/0
+pytorch-benchmark-opt-0:109:160 [2] NCCL INFO Channel 02/0 : 2[2] -> 6[2] [send] via NET/IBext_v8/3
+pytorch-benchmark-opt-0:108:161 [1] NCCL INFO Channel 01/0 : 1[1] -> 5[1] [send] via NET/IBext_v8/0
+pytorch-benchmark-opt-0:109:160 [2] NCCL INFO Channel 04/0 : 2[2] -> 6[2] [send] via NET/IBext_v8/3
+pytorch-benchmark-opt-0:108:161 [1] NCCL INFO Channel 03/0 : 1[1] -> 5[1] [send] via NET/IBext_v8/0
+pytorch-benchmark-opt-0:109:160 [2] NCCL INFO Channel 06/0 : 2[2] -> 6[2] [send] via NET/IBext_v8/3
+pytorch-benchmark-opt-0:108:161 [1] NCCL INFO Channel 05/0 : 1[1] -> 5[1] [send] via NET/IBext_v8/0
+pytorch-benchmark-opt-0:108:161 [1] NCCL INFO Channel 07/0 : 1[1] -> 5[1] [send] via NET/IBext_v8/0
+pytorch-benchmark-opt-0:109:160 [2] NCCL INFO Channel 01/0 : 2[2] -> 0[0] via P2P/CUMEM
+pytorch-benchmark-opt-0:109:160 [2] NCCL INFO Channel 03/0 : 2[2] -> 0[0] via P2P/CUMEM
+pytorch-benchmark-opt-0:109:160 [2] NCCL INFO Channel 05/0 : 2[2] -> 0[0] via P2P/CUMEM
+pytorch-benchmark-opt-0:109:160 [2] NCCL INFO Channel 07/0 : 2[2] -> 0[0] via P2P/CUMEM
+pytorch-benchmark-opt-0:108:154 [1] NCCL INFO NCCL_IB_QPS_PER_CONNECTION set by environment to 2.
+pytorch-benchmark-opt-0:108:154 [1] NCCL INFO NCCL_IB_GID_INDEX set by environment to 3.
+pytorch-benchmark-opt-0:109:152 [2] NCCL INFO NCCL_IB_QPS_PER_CONNECTION set by environment to 2.
+pytorch-benchmark-opt-0:109:152 [2] NCCL INFO NCCL_IB_GID_INDEX set by environment to 3.
+pytorch-benchmark-opt-0:109:160 [2] NCCL INFO Connected all rings
+pytorch-benchmark-opt-0:107:162 [0] NCCL INFO Connected all rings
+pytorch-benchmark-opt-0:110:163 [3] NCCL INFO Connected all rings
+pytorch-benchmark-opt-0:108:161 [1] NCCL INFO Connected all rings
+    0.10      131.9          115.2          199.5          1.33           1.52           0.88
+    0.12      143.0          124.8          236.4          1.47           1.68           0.89
+    0.15      172.2          134.0         1416.2          1.52           1.96           0.19
+    0.20      190.7          154.9         1526.8          1.84           2.26           0.23
+    0.32      362.9          199.4         4234.1          1.54           2.81           0.13
+    0.40      246.7          218.9          348.3          2.84           3.20           2.01
+    0.50      308.8          249.5         1461.1          2.83           3.51           0.60
+    0.64      345.6          194.9         1613.3          3.24           5.75           0.69
+    0.80      374.7          296.6         2493.7          3.74           4.72           0.56
+    1.00      407.2          331.3         1223.4          4.30           5.28           1.43
+    1.25      474.4          257.3         2199.4          4.61           8.50           0.99
+    1.50      605.4          355.5         1880.2          4.34           7.38           1.40
+    2.00      335.8          300.6          890.6         10.42          11.65           3.93
+    3.16      359.6          331.7         1209.0         15.38          16.67           4.57
+    4.00      415.5          342.4         1350.2         16.85          20.44           5.18
+    5.00      482.1          398.0         3335.4         18.15          21.98           2.62
+    6.40      511.2          449.8         1260.3         21.91          24.90           8.89
+    8.00      626.7          537.8         2511.0         22.34          26.03           5.58
+   10.00      785.1          654.1         2400.2         22.29          26.76           7.29
+   12.50      852.8          803.5          909.5         25.65          27.22          24.05
+   15.00      978.2          923.2         1017.8         26.84          28.43          25.79
+   20.00     1281.1         1215.8         1869.3         27.32          28.79          18.72
+   31.60     1944.7         1873.1         2021.5         28.44          29.52          27.36
+   40.00     2372.9         2250.4         2444.1         29.50          31.11          28.64
+   50.00     2945.6         2846.4         3046.8         29.71          30.74          28.72
+   64.00     3845.7         3698.8         4063.7         29.12          30.28          27.56
+   80.00     4787.3         4663.9         5000.7         29.24          30.02          28.00
+  100.00     6014.8         5853.2         6960.0         29.10          29.90          25.14
+  125.00     7510.9         7127.7         8858.1         29.12          30.69          24.69
+  160.00     9468.0         9177.9         9673.3         29.57          30.51          28.95
+  200.00    11757.8        11503.7        11988.4         29.77          30.43          29.19
+  250.00    14674.1        14317.9        14988.5         29.81          30.56          29.19
+  316.00    18649.8        18468.3        18868.4         29.65          29.94          29.31
+  400.00    23815.4        22175.9        30744.3         29.39          31.57          22.77
+  500.00    29121.3        28820.4        29627.3         30.05          30.36          29.53
+  640.00    41782.7        34946.0        84148.8         26.81          32.05          13.31
+  800.00    53121.4        42791.8        116489.9         26.35          32.72          12.02
+ 1000.00    57856.0        57404.8        58363.1         30.25          30.49          29.98
+ 1250.00    72517.3        68117.0        81038.5         30.17          32.11          26.99
+ 1600.00    94902.8        89857.1        104257.6         29.50          31.16          26.86
+ 2000.00    123303.9        115152.6        132356.2         28.39          30.39          26.44
+ 2500.00    147550.6        146502.5        148402.0         29.65          29.86          29.48
+ 3160.00    179476.4        178113.0        180675.2         30.81          31.05          30.61
+ 4000.00    230214.3        225491.2        234632.4         30.41          31.04          29.83
+ 5000.00    282337.5        275944.2        289980.8         30.99          31.71          30.17
+ 6400.00    364770.1        351270.4        371026.2         30.70          31.88          30.19
+pytorch-benchmark-opt-0:109:166 [2] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-0:109:166 [2] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-0:109:166 [2] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-0:109:166 [2] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-0:109:166 [2] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-0:109:166 [2] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-0:109:152 [2] NCCL INFO misc/socket.cc:832 -> 3
+ 8000.00    449714.3        438244.4        458161.6         31.13          31.95          30.56
+pytorch-benchmark-opt-0:107:167 [0] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-0:107:167 [0] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-0:107:155 [0] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-0:107:167 [0] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-0:107:167 [0] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-0:107:167 [0] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-0:107:167 [0] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-0:107:167 [0] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-0:107:167 [0] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-0:107:167 [0] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-0:109:152 [2] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-0:110:168 [3] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-0:110:168 [3] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-0:110:168 [3] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-0:107:155 [0] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-0:110:168 [3] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-0:110:168 [3] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-0:110:168 [3] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-0:110:168 [3] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-0:110:168 [3] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-0:110:168 [3] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-0:110:153 [3] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-0:108:169 [1] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-0:108:169 [1] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-0:108:169 [1] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-0:108:154 [1] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-0:108:169 [1] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-0:108:169 [1] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-0:108:169 [1] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-0:110:153 [3] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-0:110:168 [3] NCCL INFO comm 0x8bac090 rank 3 nranks 8 cudaDev 3 busId c6000 - Abort COMPLETE
+pytorch-benchmark-opt-0:109:166 [2] NCCL INFO comm 0x7e87fa0 rank 2 nranks 8 cudaDev 2 busId a6000 - Abort COMPLETE
+pytorch-benchmark-opt-0:107:167 [0] NCCL INFO comm 0x8d339f0 rank 0 nranks 8 cudaDev 0 busId 6000 - Abort COMPLETE
+pytorch-benchmark-opt-0:108:169 [1] NCCL INFO comm 0x8059a20 rank 1 nranks 8 cudaDev 1 busId 26000 - Abort COMPLETE
++ BENCHMARK_EXIT_CODE=0
++ echo '=== Benchmark completed with exit code: 0 ==='
+=== Benchmark completed with exit code: 0 ===
+SUCCESS: Optimized benchmark completed on pytorch-benchmark-opt-0
+Container will remain running. Use 'oc logs' to view results.
++ '[' 0 -eq 0 ']'
++ echo 'SUCCESS: Optimized benchmark completed on pytorch-benchmark-opt-0'
++ echo 'Container will remain running. Use '\''oc logs'\'' to view results.'
++ sleep infinity

@@ -1,0 +1,1607 @@
+Starting OPTIMIZED PyTorch AllReduce Benchmark on pod pytorch-benchmark-opt-1
++ echo 'Starting OPTIMIZED PyTorch AllReduce Benchmark on pod pytorch-benchmark-opt-1'
++ export NODE_RANK=1
++ NODE_RANK=1
++ export NNODES=2
++ NNODES=2
++ export NPROC_PER_NODE=4
++ NPROC_PER_NODE=4
++ export MASTER_PORT=29501
++ MASTER_PORT=29501
++ '[' pytorch-benchmark-opt-1 = pytorch-benchmark-opt-0 ']'
++ echo 'Discovering master pod IP...'
++ for i in {1..60}
+Discovering master pod IP...
+++ getent hosts pytorch-benchmark-opt-0.pytorch-benchmark-opt-svc.nccl-test.svc.cluster.local
+++ awk '{print $1}'
++ MASTER_IP=10.131.0.57
+Master node IP: 10.131.0.57
++ '[' -n 10.131.0.57 ']'
++ export MASTER_ADDR=10.131.0.57
++ MASTER_ADDR=10.131.0.57
++ echo 'Master node IP: 10.131.0.57'
++ break
++ '[' -z 10.131.0.57 ']'
+NODE_RANK=1, NNODES=2, NPROC_PER_NODE=4
++ echo 'NODE_RANK=1, NNODES=2, NPROC_PER_NODE=4'
+MASTER_ADDR=10.131.0.57, MASTER_PORT=29501
++ echo 'MASTER_ADDR=10.131.0.57, MASTER_PORT=29501'
+Total GPUs: 8
++ echo 'Total GPUs: 8'
++ echo '=== GPU Information ==='
+=== GPU Information ===
++ nvidia-smi --query-gpu=index,name,memory.total --format=csv
+index, name, memory.total [MiB]
+0, NVIDIA H100 80GB HBM3, 81559 MiB
+1, NVIDIA H100 80GB HBM3, 81559 MiB
+2, NVIDIA H100 80GB HBM3, 81559 MiB
+3, NVIDIA H100 80GB HBM3, 81559 MiB
+=== RDMA Devices ===
++ echo '=== RDMA Devices ==='
++ ls -la /dev/infiniband/
+total 0
+drwxr-xr-x. 2 root root      220 Jan 29 16:17 .
+drwxr-xr-x. 6 root root      540 Jan 29 16:17 ..
+crw-rw-rw-. 1 root root  10, 123 Jan 29 16:17 rdma_cm
+crw-rw-rw-. 1 root root 231,  10 Jan 29 16:17 umad10
+crw-rw-rw-. 1 root root 231,  11 Jan 29 16:17 umad11
+crw-rw-rw-. 1 root root 231,   6 Jan 29 16:17 umad6
+crw-rw-rw-. 1 root root 231,   7 Jan 29 16:17 umad7
+crw-rw-rw-. 1 root root 231, 202 Jan 29 16:17 uverbs10
+crw-rw-rw-. 1 root root 231, 203 Jan 29 16:17 uverbs11
+crw-rw-rw-. 1 root root 231, 198 Jan 29 16:17 uverbs6
+crw-rw-rw-. 1 root root 231, 199 Jan 29 16:17 uverbs7
+=== SR-IOV Network Interfaces ===
++ echo '=== SR-IOV Network Interfaces ==='
++ for iface in net1 net2 net3 net4
++ '[' -e /sys/class/net/net1 ']'
+++ cat /sys/class/net/net1/address
+++ cat /sys/class/net/net1/mtu
+net1: 66:19:7a:ca:0c:3a MTU=9000
++ echo 'net1: 66:19:7a:ca:0c:3a MTU=9000'
++ for iface in net1 net2 net3 net4
++ '[' -e /sys/class/net/net2 ']'
+++ cat /sys/class/net/net2/address
+++ cat /sys/class/net/net2/mtu
+net2: e2:aa:4a:59:84:f4 MTU=9000
++ echo 'net2: e2:aa:4a:59:84:f4 MTU=9000'
++ for iface in net1 net2 net3 net4
++ '[' -e /sys/class/net/net3 ']'
+++ cat /sys/class/net/net3/address
+++ cat /sys/class/net/net3/mtu
+net3: 6a:10:57:83:44:23 MTU=9000
++ echo 'net3: 6a:10:57:83:44:23 MTU=9000'
++ for iface in net1 net2 net3 net4
++ '[' -e /sys/class/net/net4 ']'
+++ cat /sys/class/net/net4/address
+++ cat /sys/class/net/net4/mtu
+net4: 26:92:ee:e7:ad:9d MTU=9000
++ echo 'net4: 26:92:ee:e7:ad:9d MTU=9000'
++ echo '=== Optimized NCCL Environment ==='
+=== Optimized NCCL Environment ===
++ env
++ grep NCCL
++ sort
+AWS_OFI_NCCL_VERSION=1.12.1
+NCCL_ALGO=Ring,Tree
+NCCL_BUFFSIZE=8388608
+NCCL_CROSS_NIC=2
+NCCL_DEBUG=INFO
+NCCL_DEBUG_SUBSYS=INIT,NET
+NCCL_IB_AR_THRESHOLD=8192
+NCCL_IB_GID_INDEX=3
+NCCL_IB_HCA=mlx5_6,mlx5_7,mlx5_10,mlx5_11
+NCCL_IB_PCI_RELAXED_ORDERING=1
+NCCL_IB_RETRY_CNT=7
+NCCL_IB_SL=0
+NCCL_IB_TC=106
+NCCL_IB_TIMEOUT=22
+NCCL_IGNORE_CPU_AFFINITY=0
+NCCL_LL_THRESHOLD=0
+NCCL_MAX_NCHANNELS=16
+NCCL_MIN_NCHANNELS=8
+NCCL_NET_GDR_LEVEL=5
+NCCL_NET_GDR_READ=1
+NCCL_NET_OVERHEAD=0
+NCCL_NET_SHARED_BUFFERS=1
+NCCL_NSOCKS_PERTHREAD=8
+NCCL_NTHREADS=640
+NCCL_NVLS_ENABLE=0
+NCCL_PROTO=Simple
+NCCL_SOCKET_FAMILY=4
+NCCL_SOCKET_IFNAME=net1,net2,net3,net4
+NCCL_SOCKET_NTHREADS=8
+NCCL_TOPO_FILE=
+NCCL_TREE_THRESHOLD=0
+NCCL_VERSION=2.23.4
+Waiting for all pods to be ready...
++ echo 'Waiting for all pods to be ready...'
++ sleep 10
+=== Starting OPTIMIZED PyTorch Distributed Benchmark ===
++ echo '=== Starting OPTIMIZED PyTorch Distributed Benchmark ==='
++ torchrun --nnodes=2 --nproc_per_node=4 --node_rank=1 --master_addr=10.131.0.57 --master_port=29501 --rdzv_backend=c10d --rdzv_endpoint=10.131.0.57:29501 /benchmark/allreduce-loop.py --multiplier 1
+W0129 16:17:21.196000 42 torch/distributed/run.py:793] 
+W0129 16:17:21.196000 42 torch/distributed/run.py:793] *****************************************
+W0129 16:17:21.196000 42 torch/distributed/run.py:793] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0129 16:17:21.196000 42 torch/distributed/run.py:793] *****************************************
+pytorch-benchmark-opt-1:111:111 [3] NCCL INFO cudaDriverVersion 13000
+pytorch-benchmark-opt-1:111:111 [3] NCCL INFO NCCL_SOCKET_IFNAME set to net1,net2,net3,net4
+pytorch-benchmark-opt-1:111:111 [3] NCCL INFO NCCL version 2.23.4+cuda12.6
+pytorch-benchmark-opt-1:110:110 [2] NCCL INFO cudaDriverVersion 13000
+pytorch-benchmark-opt-1:110:110 [2] NCCL INFO NCCL_SOCKET_IFNAME set to net1,net2,net3,net4
+pytorch-benchmark-opt-1:110:110 [2] NCCL INFO NCCL version 2.23.4+cuda12.6
+pytorch-benchmark-opt-1:108:108 [0] NCCL INFO cudaDriverVersion 13000
+pytorch-benchmark-opt-1:108:108 [0] NCCL INFO NCCL_SOCKET_IFNAME set to net1,net2,net3,net4
+pytorch-benchmark-opt-1:108:108 [0] NCCL INFO NCCL version 2.23.4+cuda12.6
+pytorch-benchmark-opt-1:109:109 [1] NCCL INFO cudaDriverVersion 13000
+pytorch-benchmark-opt-1:109:109 [1] NCCL INFO NCCL_SOCKET_IFNAME set to net1,net2,net3,net4
+pytorch-benchmark-opt-1:109:109 [1] NCCL INFO NCCL version 2.23.4+cuda12.6
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO Plugin Path : /opt/hpcx/nccl_rdma_sharp_plugin/lib/libnccl-net.so
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO P2P plugin v8 IBext_v8
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO NCCL_SOCKET_IFNAME set to net1,net2,net3,net4
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO Plugin Path : /opt/hpcx/nccl_rdma_sharp_plugin/lib/libnccl-net.so
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO P2P plugin v8 IBext_v8
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO NCCL_SOCKET_IFNAME set to net1,net2,net3,net4
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO Plugin Path : /opt/hpcx/nccl_rdma_sharp_plugin/lib/libnccl-net.so
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO P2P plugin v8 IBext_v8
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO NCCL_SOCKET_IFNAME set to net1,net2,net3,net4
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO Plugin Path : /opt/hpcx/nccl_rdma_sharp_plugin/lib/libnccl-net.so
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO P2P plugin v8 IBext_v8
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO NCCL_SOCKET_IFNAME set to net1,net2,net3,net4
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO NET/IB : Using [0]mlx5_6:1/RoCE [1]mlx5_7:1/RoCE [2]mlx5_10:1/RoCE [3]mlx5_11:1/RoCE [RO]; OOB net1:10.0.103.3<0>
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO Using network IBext_v8
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO NET/IB : Using [0]mlx5_6:1/RoCE [1]mlx5_7:1/RoCE [2]mlx5_10:1/RoCE [3]mlx5_11:1/RoCE [RO]; OOB net1:10.0.103.3<0>
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO NET/IB : Using [0]mlx5_6:1/RoCE [1]mlx5_7:1/RoCE [2]mlx5_10:1/RoCE [3]mlx5_11:1/RoCE [RO]; OOB net1:10.0.103.3<0>
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO NET/IB : Using [0]mlx5_6:1/RoCE [1]mlx5_7:1/RoCE [2]mlx5_10:1/RoCE [3]mlx5_11:1/RoCE [RO]; OOB net1:10.0.103.3<0>
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO Using network IBext_v8
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO Using network IBext_v8
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO Using network IBext_v8
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO DMA-BUF is available on GPU device 2
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO ncclCommInitRankConfig comm 0x8b10ea0 rank 6 nranks 8 cudaDev 2 nvmlDev 2 busId a6000 commId 0xda8abed40f63ed77 - Init START
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO DMA-BUF is available on GPU device 1
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO ncclCommInitRankConfig comm 0x7fe8360 rank 5 nranks 8 cudaDev 1 nvmlDev 1 busId 26000 commId 0xda8abed40f63ed77 - Init START
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO DMA-BUF is available on GPU device 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO ncclCommInitRankConfig comm 0x91a4e40 rank 4 nranks 8 cudaDev 0 nvmlDev 0 busId 6000 commId 0xda8abed40f63ed77 - Init START
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO DMA-BUF is available on GPU device 3
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO ncclCommInitRankConfig comm 0x8af1310 rank 7 nranks 8 cudaDev 3 nvmlDev 3 busId c6000 commId 0xda8abed40f63ed77 - Init START
+
+pytorch-benchmark-opt-1:110:133 [2] graph/xml.cc:375 NCCL WARN Could not open XML topology file  : No such file or directory
+
+pytorch-benchmark-opt-1:108:134 [0] graph/xml.cc:375 NCCL WARN Could not open XML topology file  : No such file or directory
+
+pytorch-benchmark-opt-1:109:135 [1] graph/xml.cc:375 NCCL WARN Could not open XML topology file  : No such file or directory
+
+pytorch-benchmark-opt-1:111:132 [3] graph/xml.cc:375 NCCL WARN Could not open XML topology file  : No such file or directory
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO NET/IBext_v8 : GPU Direct RDMA Enabled for HCA 0 'mlx5_6'
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO NET/IBext_v8 : GPU Direct RDMA Enabled for HCA 0 'mlx5_6'
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO NET/IBext_v8 : GPU Direct RDMA Enabled for HCA 1 'mlx5_7'
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO NET/IBext_v8 : GPU Direct RDMA Enabled for HCA 0 'mlx5_6'
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO NET/IBext_v8 : GPU Direct RDMA Enabled for HCA 0 'mlx5_6'
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO NET/IBext_v8 : GPU Direct RDMA Enabled for HCA 2 'mlx5_10'
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO NET/IBext_v8 : GPU Direct RDMA Enabled for HCA 1 'mlx5_7'
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO NET/IBext_v8 : GPU Direct RDMA Enabled for HCA 1 'mlx5_7'
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO NET/IBext_v8 : GPU Direct RDMA Enabled for HCA 1 'mlx5_7'
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO NET/IBext_v8 : GPU Direct RDMA Enabled for HCA 3 'mlx5_11'
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO NET/IBext_v8 : GPU Direct RDMA Enabled for HCA 2 'mlx5_10'
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO NET/IBext_v8 : GPU Direct RDMA Enabled for HCA 2 'mlx5_10'
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO NET/IBext_v8 : GPU Direct RDMA Enabled for HCA 2 'mlx5_10'
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO NET/IBext_v8 : GPU Direct RDMA Enabled for HCA 3 'mlx5_11'
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO NET/IBext_v8 : GPU Direct RDMA Enabled for HCA 3 'mlx5_11'
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO NET/IBext_v8 : GPU Direct RDMA Enabled for HCA 3 'mlx5_11'
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO NCCL_NET_GDR_LEVEL set by environment to SYS
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO Setting affinity for GPU 0 to ffff,ffffffff,00000000,0000ffff,ffffffff
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO NCCL_NET_GDR_LEVEL set by environment to SYS
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO NCCL_NET_GDR_LEVEL set by environment to SYS
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO Setting affinity for GPU 1 to ffff,ffffffff,00000000,0000ffff,ffffffff
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO Setting affinity for GPU 3 to ffffffff,ffff0000,00000000,ffffffff,ffff0000,00000000
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO NCCL_NET_GDR_LEVEL set by environment to SYS
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO Setting affinity for GPU 2 to ffffffff,ffff0000,00000000,ffffffff,ffff0000,00000000
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO comm 0x8b10ea0 rank 6 nRanks 8 nNodes 2 localRanks 4 localRank 2 MNNVL 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO comm 0x8af1310 rank 7 nRanks 8 nNodes 2 localRanks 4 localRank 3 MNNVL 0
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO comm 0x91a4e40 rank 4 nRanks 8 nNodes 2 localRanks 4 localRank 0 MNNVL 0
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO Trees [0] -1/-1/-1->7->6 [1] 4/-1/-1->7->6 [2] -1/-1/-1->7->5 [3] 5/-1/-1->7->3 [4] 6/-1/-1->7->4 [5] 4/-1/-1->7->5 [6] 5/-1/-1->7->4 [7] 6/-1/-1->7->3 [8] -1/-1/-1->7->6 [9] 4/-1/-1->7->6 [10] -1/-1/-1->7->5 [11] 5/3/-1->7->-1 [12] 6/-1/-1->7->4 [13] 4/-1/-1->7->5 [14] 5/-1/-1->7->4 [15] 6/3/-1->7->-1
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO Trees [0] 7/-1/-1->6->5 [1] 7/-1/-1->6->5 [2] 4/-1/-1->6->2 [3] -1/-1/-1->6->4 [4] 5/-1/-1->6->7 [5] -1/-1/-1->6->4 [6] 4/-1/-1->6->2 [7] 5/-1/-1->6->7 [8] 7/-1/-1->6->5 [9] 7/-1/-1->6->5 [10] 4/2/-1->6->-1 [11] -1/-1/-1->6->4 [12] 5/-1/-1->6->7 [13] -1/-1/-1->6->4 [14] 4/2/-1->6->-1 [15] 5/-1/-1->6->7
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO Trees [0] 5/-1/-1->4->0 [1] -1/-1/-1->4->7 [2] 5/-1/-1->4->6 [3] 6/-1/-1->4->5 [4] 7/-1/-1->4->0 [5] 6/-1/-1->4->7 [6] 7/-1/-1->4->6 [7] -1/-1/-1->4->5 [8] 5/0/-1->4->-1 [9] -1/-1/-1->4->7 [10] 5/-1/-1->4->6 [11] 6/-1/-1->4->5 [12] 7/0/-1->4->-1 [13] 6/-1/-1->4->7 [14] 7/-1/-1->4->6 [15] -1/-1/-1->4->5
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO P2P Chunksize set to 131072
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO P2P Chunksize set to 131072
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO P2P Chunksize set to 131072
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO comm 0x7fe8360 rank 5 nRanks 8 nNodes 2 localRanks 4 localRank 1 MNNVL 0
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO Trees [0] 6/-1/-1->5->4 [1] 6/-1/-1->5->1 [2] 7/-1/-1->5->4 [3] 4/-1/-1->5->7 [4] -1/-1/-1->5->6 [5] 7/-1/-1->5->1 [6] -1/-1/-1->5->7 [7] 4/-1/-1->5->6 [8] 6/-1/-1->5->4 [9] 6/1/-1->5->-1 [10] 7/-1/-1->5->4 [11] 4/-1/-1->5->7 [12] -1/-1/-1->5->6 [13] 7/1/-1->5->-1 [14] -1/-1/-1->5->7 [15] 4/-1/-1->5->6
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO P2P Chunksize set to 131072
+pytorch-benchmark-opt-1:108:153 [0] NCCL INFO [Proxy Service UDS] Device 0 CPU core 24
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO [Proxy Service] Device 0 CPU core 14
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO [Proxy Service] Device 3 CPU core 150
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO [Proxy Service] Device 2 CPU core 84
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO [Proxy Service] Device 1 CPU core 27
+pytorch-benchmark-opt-1:110:156 [2] NCCL INFO [Proxy Service UDS] Device 2 CPU core 61
+pytorch-benchmark-opt-1:111:158 [3] NCCL INFO [Proxy Service UDS] Device 3 CPU core 68
+pytorch-benchmark-opt-1:109:159 [1] NCCL INFO [Proxy Service UDS] Device 1 CPU core 102
+
+pytorch-benchmark-opt-1:110:133 [2] graph/tuning.cc:22 NCCL WARN Invalid NCCL_NTHREADS 640 (maximum 512).
+
+pytorch-benchmark-opt-1:110:133 [2] graph/tuning.cc:22 NCCL WARN Invalid NCCL_NTHREADS 640 (maximum 512).
+
+pytorch-benchmark-opt-1:110:133 [2] graph/tuning.cc:22 NCCL WARN Invalid NCCL_NTHREADS 640 (maximum 512).
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO threadThresholds 8/8/64 | 64/8/64 | 512 | 512
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO 16 coll channels, 16 collnet channels, 0 nvls channels, 16 p2p channels, 2 p2p channels per peer
+
+pytorch-benchmark-opt-1:108:134 [0] graph/tuning.cc:22 NCCL WARN Invalid NCCL_NTHREADS 640 (maximum 512).
+
+pytorch-benchmark-opt-1:108:134 [0] graph/tuning.cc:22 NCCL WARN Invalid NCCL_NTHREADS 640 (maximum 512).
+
+pytorch-benchmark-opt-1:108:134 [0] graph/tuning.cc:22 NCCL WARN Invalid NCCL_NTHREADS 640 (maximum 512).
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO threadThresholds 8/8/64 | 64/8/64 | 512 | 512
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO 16 coll channels, 16 collnet channels, 0 nvls channels, 16 p2p channels, 2 p2p channels per peer
+
+pytorch-benchmark-opt-1:109:135 [1] graph/tuning.cc:22 NCCL WARN Invalid NCCL_NTHREADS 640 (maximum 512).
+
+pytorch-benchmark-opt-1:109:135 [1] graph/tuning.cc:22 NCCL WARN Invalid NCCL_NTHREADS 640 (maximum 512).
+
+pytorch-benchmark-opt-1:109:135 [1] graph/tuning.cc:22 NCCL WARN Invalid NCCL_NTHREADS 640 (maximum 512).
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO threadThresholds 8/8/64 | 64/8/64 | 512 | 512
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO 16 coll channels, 16 collnet channels, 0 nvls channels, 16 p2p channels, 2 p2p channels per peer
+
+pytorch-benchmark-opt-1:111:132 [3] graph/tuning.cc:22 NCCL WARN Invalid NCCL_NTHREADS 640 (maximum 512).
+
+pytorch-benchmark-opt-1:111:132 [3] graph/tuning.cc:22 NCCL WARN Invalid NCCL_NTHREADS 640 (maximum 512).
+
+pytorch-benchmark-opt-1:111:132 [3] graph/tuning.cc:22 NCCL WARN Invalid NCCL_NTHREADS 640 (maximum 512).
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO threadThresholds 8/8/64 | 64/8/64 | 512 | 512
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO 16 coll channels, 16 collnet channels, 0 nvls channels, 16 p2p channels, 2 p2p channels per peer
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO ncclCommInitRankConfig comm 0x8b10ea0 rank 6 nranks 8 cudaDev 2 nvmlDev 2 busId a6000 commId 0xda8abed40f63ed77 - Init COMPLETE
+pytorch-benchmark-opt-1:110:133 [2] NCCL INFO Init timings - ncclCommInitRankConfig: rank 6 nranks 8 total 4.55 (kernels 0.25, alloc 1.73, bootstrap 0.14, allgathers 0.35, topo 0.05, graphs 1.99, connections 0.03, rest 0.01)
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO ncclCommInitRankConfig comm 0x91a4e40 rank 4 nranks 8 cudaDev 0 nvmlDev 0 busId 6000 commId 0xda8abed40f63ed77 - Init COMPLETE
+pytorch-benchmark-opt-1:108:134 [0] NCCL INFO Init timings - ncclCommInitRankConfig: rank 4 nranks 8 total 4.55 (kernels 0.25, alloc 1.77, bootstrap 0.11, allgathers 0.34, topo 0.05, graphs 2.01, connections 0.03, rest 0.01)
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO ncclCommInitRankConfig comm 0x8af1310 rank 7 nranks 8 cudaDev 3 nvmlDev 3 busId c6000 commId 0xda8abed40f63ed77 - Init COMPLETE
+pytorch-benchmark-opt-1:111:132 [3] NCCL INFO Init timings - ncclCommInitRankConfig: rank 7 nranks 8 total 4.56 (kernels 0.26, alloc 1.78, bootstrap 0.10, allgathers 0.36, topo 0.05, graphs 1.98, connections 0.04, rest 0.00)
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO ncclCommInitRankConfig comm 0x7fe8360 rank 5 nranks 8 cudaDev 1 nvmlDev 1 busId 26000 commId 0xda8abed40f63ed77 - Init COMPLETE
+pytorch-benchmark-opt-1:109:135 [1] NCCL INFO Init timings - ncclCommInitRankConfig: rank 5 nranks 8 total 4.55 (kernels 0.25, alloc 1.76, bootstrap 0.11, allgathers 0.31, topo 0.05, graphs 2.03, connections 0.03, rest 0.00)
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 0 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0004f40
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 00/0 : 4[0] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 0 from local rank 0, transport 0
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 0 from local rank 3, transport 0
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 0 from local rank 1, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4004f40
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78004f40
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0004f40
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 1 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0004fb8
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 2 from local rank 2, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 02/0 : 4[0] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005030
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 1 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4004fb8
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 1 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78004fb8
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 1 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0004fb8
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 03/0 : 4[0] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 3 from local rank 2, transport 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 2 from local rank 0, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a00050a8
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005030
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 2 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005030
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 2 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005030
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 4 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005120
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 07/0 : 4[0] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 3 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b40050a8
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 3 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d00050a8
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 5 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005198
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 3 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e780050a8
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 08/0 : 4[0] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 4 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005120
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 4 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005120
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 6 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005210
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 10/0 : 4[0] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 5 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005198
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 5 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005198
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 4 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005120
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 7 from local rank 2, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 11/0 : 4[0] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005288
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 6 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005210
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 6 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005210
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 15/0 : 4[0] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 5 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005198
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 7 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005288
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 00/0 : 6[2] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 8 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005300
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 7 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005288
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 6 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005210
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 00/0 : 5[1] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 01/0 : 6[2] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 8 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005300
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 9 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005378
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 7 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005288
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 04/0 : 6[2] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 01/0 : 5[1] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 10 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a00053f0
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 9 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005378
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 04/0 : 5[1] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 07/0 : 6[2] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 10 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d00053f0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 11 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005468
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 07/0 : 5[1] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 08/0 : 6[2] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 11 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005468
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 12 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a00054e0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 08/0 : 5[1] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 09/0 : 6[2] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 12 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d00054e0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 13 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005558
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 09/0 : 5[1] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 12/0 : 6[2] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 13 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005558
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 14 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a00055d0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 12/0 : 5[1] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 15/0 : 6[2] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 14 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d00055d0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 15 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005648
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 15/0 : 5[1] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 15 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005648
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 8 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005300
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 02/0 : 4[0] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 8 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005300
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 16 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a00056c0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 02/0 : 5[1] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 16 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d00056c0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 03/0 : 4[0] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 9 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005378
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 9 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005378
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 03/0 : 5[1] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 17 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005738
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 17 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005738
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 10 from local rank 3, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 05/0 : 4[0] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e780053f0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 10 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b40053f0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 05/0 : 5[1] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 18 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a00057b0
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 18 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d00057b0
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 11 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005468
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 06/0 : 4[0] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 11 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005468
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 06/0 : 5[1] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 19 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005828
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 19 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005828
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 12 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e780054e0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 10/0 : 4[0] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 10/0 : 5[1] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 12 from local rank 0, transport 0
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 20 from local rank 1, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b40054e0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d00058a0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 20 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a00058a0
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 13 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005558
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 21 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005918
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 11/0 : 5[1] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 11/0 : 4[0] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 21 from local rank 1, transport 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 13 from local rank 0, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005918
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005558
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 14 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e780055d0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 22 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005990
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 13/0 : 5[1] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 13/0 : 4[0] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 22 from local rank 1, transport 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 14 from local rank 0, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005990
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b40055d0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 23 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005a08
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 15 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005648
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 14/0 : 5[1] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 14/0 : 4[0] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 23 from local rank 1, transport 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 15 from local rank 0, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005a08
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005648
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 01/0 : 4[0] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 16 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b40056c0
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 16 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e780056c0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 04/0 : 4[0] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 17 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005738
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 17 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005738
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 05/0 : 4[0] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 18 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b40057b0
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 18 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e780057b0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 06/0 : 4[0] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 19 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005828
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 19 from local rank 3, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 09/0 : 4[0] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005828
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 20 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b40058a0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 12/0 : 4[0] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 21 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005918
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 20 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e780058a0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 13/0 : 4[0] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 22 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005990
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 21 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005918
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 14/0 : 4[0] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 23 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005a08
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 22 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005990
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 23 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005a08
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 24 from local rank 2, transport 2
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005a80
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:164 [2] NCCL INFO [Proxy Progress] Device 2 CPU core 147
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 02/0 : 2[2] -> 6[2] [receive] via NET/IBext_v8/2/GDRDMA
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 25 from local rank 2, transport 2
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005af8
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 06/0 : 2[2] -> 6[2] [receive] via NET/IBext_v8/2/GDRDMA
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 26 from local rank 2, transport 2
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005b70
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 10/0 : 2[2] -> 6[2] [receive] via NET/IBext_v8/2/GDRDMA
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 27 from local rank 2, transport 2
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 24 from local rank 1, transport 2
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005be8
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005a80
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 14/0 : 2[2] -> 6[2] [receive] via NET/IBext_v8/2/GDRDMA
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 28 from local rank 2, transport 2
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005c60
+pytorch-benchmark-opt-1:109:165 [1] NCCL INFO [Proxy Progress] Device 1 CPU core 28
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 01/0 : 1[1] -> 5[1] [receive] via NET/IBext_v8/1/GDRDMA
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 02/0 : 6[2] -> 2[2] [send] via NET/IBext_v8/2/GDRDMA
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 29 from local rank 2, transport 2
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 25 from local rank 1, transport 2
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005cd8
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005af8
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 06/0 : 6[2] -> 2[2] [send] via NET/IBext_v8/2/GDRDMA
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 30 from local rank 2, transport 2
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 05/0 : 1[1] -> 5[1] [receive] via NET/IBext_v8/1/GDRDMA
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005d50
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 26 from local rank 1, transport 2
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 10/0 : 6[2] -> 2[2] [send] via NET/IBext_v8/2/GDRDMA
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005b70
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 31 from local rank 2, transport 2
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005dc8
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 09/0 : 1[1] -> 5[1] [receive] via NET/IBext_v8/1/GDRDMA
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 14/0 : 6[2] -> 2[2] [send] via NET/IBext_v8/2/GDRDMA
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 27 from local rank 1, transport 2
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005be8
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 13/0 : 1[1] -> 5[1] [receive] via NET/IBext_v8/1/GDRDMA
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 28 from local rank 1, transport 2
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005c60
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 01/0 : 5[1] -> 1[1] [send] via NET/IBext_v8/1/GDRDMA
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 29 from local rank 1, transport 2
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005cd8
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 05/0 : 5[1] -> 1[1] [send] via NET/IBext_v8/1/GDRDMA
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 02/0 : 6[2] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 30 from local rank 1, transport 2
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005d50
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 32 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005e40
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 09/0 : 5[1] -> 1[1] [send] via NET/IBext_v8/1/GDRDMA
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 31 from local rank 1, transport 2
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005dc8
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 13/0 : 5[1] -> 1[1] [send] via NET/IBext_v8/1/GDRDMA
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 03/0 : 6[2] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 33 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005eb8
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 05/0 : 6[2] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 32 from local rank 1, transport 0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 34 from local rank 2, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005e40
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005f30
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 06/0 : 6[2] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 35 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0005fa8
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 33 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005eb8
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 10/0 : 6[2] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 36 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006020
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 34 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005f30
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 11/0 : 6[2] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 37 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006098
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 35 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0005fa8
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 13/0 : 6[2] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 38 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006110
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 24 from local rank 0, transport 2
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 24 from local rank 3, transport 2
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 36 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006020
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005a80
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 14/0 : 6[2] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005a80
+pytorch-benchmark-opt-1:108:167 [0] NCCL INFO [Proxy Progress] Device 0 CPU core 39
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 39 from local rank 2, transport 0
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006188
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:111:166 [3] NCCL INFO [Proxy Progress] Device 3 CPU core 65
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 00/0 : 0[0] -> 4[0] [receive] via NET/IBext_v8/0/GDRDMA
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 03/0 : 3[3] -> 7[3] [receive] via NET/IBext_v8/3/GDRDMA
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 37 from local rank 1, transport 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 25 from local rank 0, transport 2
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 25 from local rank 3, transport 2
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006098
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005af8
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005af8
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 04/0 : 0[0] -> 4[0] [receive] via NET/IBext_v8/0/GDRDMA
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 07/0 : 3[3] -> 7[3] [receive] via NET/IBext_v8/3/GDRDMA
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 26 from local rank 0, transport 2
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 26 from local rank 3, transport 2
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005b70
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005b70
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 38 from local rank 1, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 08/0 : 0[0] -> 4[0] [receive] via NET/IBext_v8/0/GDRDMA
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 11/0 : 3[3] -> 7[3] [receive] via NET/IBext_v8/3/GDRDMA
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006110
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 27 from local rank 0, transport 2
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 27 from local rank 3, transport 2
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005be8
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005be8
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 12/0 : 0[0] -> 4[0] [receive] via NET/IBext_v8/0/GDRDMA
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 15/0 : 3[3] -> 7[3] [receive] via NET/IBext_v8/3/GDRDMA
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 28 from local rank 0, transport 2
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 28 from local rank 3, transport 2
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005c60
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005c60
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 39 from local rank 1, transport 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 00/0 : 4[0] -> 0[0] [send] via NET/IBext_v8/0/GDRDMA
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006188
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 03/0 : 7[3] -> 3[3] [send] via NET/IBext_v8/3/GDRDMA
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 29 from local rank 0, transport 2
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005cd8
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 29 from local rank 3, transport 2
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005cd8
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 04/0 : 4[0] -> 0[0] [send] via NET/IBext_v8/0/GDRDMA
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 07/0 : 7[3] -> 3[3] [send] via NET/IBext_v8/3/GDRDMA
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 30 from local rank 0, transport 2
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005d50
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 30 from local rank 3, transport 2
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005d50
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 08/0 : 4[0] -> 0[0] [send] via NET/IBext_v8/0/GDRDMA
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 11/0 : 7[3] -> 3[3] [send] via NET/IBext_v8/3/GDRDMA
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 31 from local rank 0, transport 2
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005dc8
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 31 from local rank 3, transport 2
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005dc8
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Channel 12/0 : 4[0] -> 0[0] [send] via NET/IBext_v8/0/GDRDMA
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 15/0 : 7[3] -> 3[3] [send] via NET/IBext_v8/3/GDRDMA
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 32 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005e40
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 01/0 : 7[3] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 32 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005e40
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 33 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005eb8
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 34 from local rank 0, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 04/0 : 7[3] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005f30
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 33 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005eb8
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 35 from local rank 0, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 05/0 : 7[3] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4005fa8
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 34 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005f30
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 36 from local rank 0, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 06/0 : 7[3] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006020
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 35 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78005fa8
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 37 from local rank 0, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 09/0 : 7[3] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006098
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 36 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006020
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 38 from local rank 0, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 12/0 : 7[3] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006110
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 37 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006098
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 39 from local rank 0, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 13/0 : 7[3] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006188
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 38 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006110
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 14/0 : 7[3] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 39 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006188
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 02/0 : 7[3] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 40 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006200
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 40 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006200
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 03/0 : 7[3] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 41 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006278
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 41 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006278
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 05/0 : 7[3] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 42 from local rank 3, transport 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 42 from local rank 0, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e780062f0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b40062f0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 06/0 : 7[3] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 43 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006368
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 43 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006368
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 10/0 : 7[3] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 44 from local rank 3, transport 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 44 from local rank 0, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e780063e0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b40063e0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 11/0 : 7[3] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 45 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006458
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 45 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006458
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 46 from local rank 0, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 13/0 : 7[3] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b40064d0
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 46 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e780064d0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 47 from local rank 0, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 14/0 : 7[3] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006548
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 47 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006548
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 00/0 : 7[3] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 48 from local rank 3, transport 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 48 from local rank 0, transport 0
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 40 from local rank 1, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e780065c0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b40065c0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006200
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 40 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006200
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 01/0 : 7[3] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 49 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006638
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 49 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006638
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 41 from local rank 1, transport 0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 41 from local rank 2, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006278
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006278
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 04/0 : 7[3] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 50 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e780066b0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 50 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b40066b0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 42 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a00062f0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 07/0 : 7[3] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 42 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d00062f0
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 51 from local rank 3, transport 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 51 from local rank 0, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006728
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006728
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 43 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006368
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 08/0 : 7[3] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 43 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006368
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 52 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e780067a0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 52 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b40067a0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 44 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a00063e0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 09/0 : 7[3] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 53 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006818
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 44 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d00063e0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 45 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006458
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 53 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006818
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 12/0 : 7[3] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 54 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006890
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 45 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006458
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 46 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a00064d0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 54 from local rank 0, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Channel 15/0 : 7[3] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006890
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 55 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006908
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 46 from local rank 1, transport 0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 47 from local rank 2, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d00064d0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006548
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 55 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006908
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 00/0 : 6[2] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 47 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006548
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 48 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a00065c0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 00/0 : 5[1] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 01/0 : 6[2] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 48 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d00065c0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 49 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006638
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 02/0 : 5[1] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 04/0 : 6[2] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 49 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006638
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 50 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a00066b0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 03/0 : 5[1] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 07/0 : 6[2] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 50 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d00066b0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 51 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006728
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 07/0 : 5[1] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 08/0 : 6[2] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 51 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006728
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 52 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a00067a0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 08/0 : 5[1] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 09/0 : 6[2] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 52 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d00067a0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 53 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006818
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 12/0 : 6[2] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 10/0 : 5[1] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 54 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006890
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 53 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006818
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Channel 15/0 : 6[2] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 11/0 : 5[1] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 55 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006908
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 54 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006890
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Channel 15/0 : 5[1] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 55 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006908
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 56 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006980
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 56 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006980
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 56 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006980
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 57 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a00069f8
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 57 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d00069f8
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 56 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006980
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 58 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006a70
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 58 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006a70
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 57 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b40069f8
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 57 from local rank 1, transport 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 58 from local rank 3, transport 0
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e780069f8
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006a70
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 58 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006a70
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB: NCCL Dev 2 IbDev 2 Port 1 qpn 5399 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/369000AFFFF0000) fifoRkey=0x40f00 fifoLkey=0x40f00
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB: NCCL Dev 2 IbDev 2 Port 1 qpn 5400 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/369000AFFFF0000) fifoRkey=0x41000 fifoLkey=0x41000
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB: NCCL Dev 2 IbDev 2 Port 1 qpn 5401 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/369000AFFFF0000) fifoRkey=0x41100 fifoLkey=0x41100
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB: NCCL Dev 1 IbDev 1 Port 1 qpn 5451 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/368000AFFFF0000) fifoRkey=0x41000 fifoLkey=0x41000
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB: NCCL Dev 2 IbDev 2 Port 1 qpn 5402 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/369000AFFFF0000) fifoRkey=0x41200 fifoLkey=0x41200
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB: NCCL Dev 0 IbDev 0 Port 1 qpn 5447 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/367000AFFFF0000) fifoRkey=0x40f00 fifoLkey=0x40f00
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB: NCCL Dev 1 IbDev 1 Port 1 qpn 5452 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/368000AFFFF0000) fifoRkey=0x41100 fifoLkey=0x41100
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB: NCCL Dev 0 IbDev 0 Port 1 qpn 5448 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/367000AFFFF0000) fifoRkey=0x41000 fifoLkey=0x41000
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB: NCCL Dev 1 IbDev 1 Port 1 qpn 5453 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/368000AFFFF0000) fifoRkey=0x41200 fifoLkey=0x41200
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB: NCCL Dev 1 IbDev 1 Port 1 qpn 5454 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/368000AFFFF0000) fifoRkey=0x41300 fifoLkey=0x41300
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB: NCCL Dev 3 IbDev 3 Port 1 qpn 5395 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/36A000AFFFF0000) fifoRkey=0x40f00 fifoLkey=0x40f00
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB: IbDev 1 Port 1 qpn 4608 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB: IbDev 2 Port 1 qpn 4722 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB: IbDev 1 Port 1 qpn 4611 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB: IbDev 2 Port 1 qpn 4725 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB: NCCL Dev 0 IbDev 0 Port 1 qpn 5449 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/367000AFFFF0000) fifoRkey=0x41100 fifoLkey=0x41100
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB: NCCL Dev 3 IbDev 3 Port 1 qpn 5396 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/36A000AFFFF0000) fifoRkey=0x41000 fifoLkey=0x41000
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB: IbDev 0 Port 1 qpn 4615 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB: IbDev 3 Port 1 qpn 4642 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB: IbDev 1 Port 1 qpn 4614 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB: IbDev 2 Port 1 qpn 4728 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB: NCCL Dev 3 IbDev 3 Port 1 qpn 5401 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/36A000AFFFF0000) fifoRkey=0x41b00 fifoLkey=0x41b00
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB: NCCL Dev 0 IbDev 0 Port 1 qpn 5454 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/367000AFFFF0000) fifoRkey=0x41c00 fifoLkey=0x41c00
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB: IbDev 0 Port 1 qpn 4618 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB: NCCL Dev 3 IbDev 3 Port 1 qpn 5402 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/36A000AFFFF0000) fifoRkey=0x41f00 fifoLkey=0x41f00
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB: IbDev 3 Port 1 qpn 4645 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB: IbDev 2 Port 1 qpn 4797 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB: IbDev 1 Port 1 qpn 4683 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB: IbDev 0 Port 1 qpn 4621 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB: IbDev 3 Port 1 qpn 4648 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB: IbDev 0 Port 1 qpn 4690 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB: IbDev 3 Port 1 qpn 4717 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:108:162 [0] NCCL INFO Connected all trees
+pytorch-benchmark-opt-1:111:161 [3] NCCL INFO Connected all trees
+pytorch-benchmark-opt-1:109:163 [1] NCCL INFO Connected all trees
+pytorch-benchmark-opt-1:110:160 [2] NCCL INFO Connected all trees
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 0 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 59 from local rank 0, transport 2
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 59 from local rank 2, transport 0
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006ae8
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006ae8
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 60 from local rank 3, transport 2
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 59 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006ae8
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Channel 00/0 : 3[3] -> 4[0] [receive] via NET/IBext_v8/0/GDRDMA
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 61 from local rank 0, transport 2
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006b60
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006bd8
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Channel 00/0 : 7[3] -> 0[0] [send] via NET/IBext_v8/0(4)/GDRDMA
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 0 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Channel 04/0 : 3[3] -> 4[0] [receive] via NET/IBext_v8/0/GDRDMA
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 62 from local rank 3, transport 2
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 63 from local rank 0, transport 2
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006c50
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006cc8
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Channel 04/0 : 7[3] -> 0[0] [send] via NET/IBext_v8/0(4)/GDRDMA
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 0 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Channel 08/0 : 3[3] -> 4[0] [receive] via NET/IBext_v8/0/GDRDMA
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 0 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 64 from local rank 3, transport 2
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006d40
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 65 from local rank 0, transport 2
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006db8
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Channel 08/0 : 7[3] -> 0[0] [send] via NET/IBext_v8/0(4)/GDRDMA
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 0 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Channel 12/0 : 3[3] -> 4[0] [receive] via NET/IBext_v8/0/GDRDMA
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Channel 04/0 : 4[0] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 66 from local rank 3, transport 2
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006e30
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 67 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006ea8
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 0 'mlx5_6
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Channel 12/0 : 7[3] -> 0[0] [send] via NET/IBext_v8/0(4)/GDRDMA
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 60 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006b60
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 60 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006b60
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Channel 12/0 : 4[0] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 68 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006f20
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Channel 01/0 : 5[1] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Channel 07/0 : 4[0] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 59 from local rank 3, transport 0
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 61 from local rank 1, transport 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 69 from local rank 0, transport 0
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006ae8
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006bd8
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4006f98
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Channel 09/0 : 5[1] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Channel 15/0 : 4[0] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 62 from local rank 1, transport 0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 70 from local rank 0, transport 0
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006c50
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4007010
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 60 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006b60
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Channel 02/0 : 4[0] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 71 from local rank 0, transport 0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 61 from local rank 2, transport 2
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4007088
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006bd8
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Channel 02/0 : 3[3] -> 6[2] [receive] via NET/IBext_v8/2/GDRDMA
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 63 from local rank 1, transport 2
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006cc8
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 62 from local rank 2, transport 2
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 61 from local rank 3, transport 0
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006c50
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006bd8
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Channel 10/0 : 4[0] -> 7[3] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy send connection 72 from local rank 0, transport 0
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Channel 06/0 : 3[3] -> 6[2] [receive] via NET/IBext_v8/2/GDRDMA
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Channel 01/0 : 0[0] -> 5[1] [receive] via NET/IBext_v8/1/GDRDMA
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4007100
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 63 from local rank 2, transport 2
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 64 from local rank 1, transport 2
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006cc8
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006d40
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Channel 10/0 : 3[3] -> 6[2] [receive] via NET/IBext_v8/2/GDRDMA
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 2 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Channel 05/0 : 0[0] -> 5[1] [receive] via NET/IBext_v8/1/GDRDMA
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 64 from local rank 2, transport 2
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006d40
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 62 from local rank 3, transport 0
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 65 from local rank 1, transport 2
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006c50
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006db8
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Channel 14/0 : 3[3] -> 6[2] [receive] via NET/IBext_v8/2/GDRDMA
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Channel 09/0 : 0[0] -> 5[1] [receive] via NET/IBext_v8/1/GDRDMA
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO GPU Direct RDMA Enabled for GPU 26000 / HCA 1 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 66 from local rank 1, transport 2
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006e30
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 2 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Channel 13/0 : 0[0] -> 5[1] [receive] via NET/IBext_v8/1/GDRDMA
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 65 from local rank 3, transport 2
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006db8
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Channel 02/0 : 7[3] -> 2[2] [send] via NET/IBext_v8/2(6)/GDRDMA
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 2 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 66 from local rank 3, transport 2
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006e30
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Channel 06/0 : 7[3] -> 2[2] [send] via NET/IBext_v8/2(6)/GDRDMA
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 2 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 67 from local rank 3, transport 2
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006ea8
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Channel 10/0 : 7[3] -> 2[2] [send] via NET/IBext_v8/2(6)/GDRDMA
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 2 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 68 from local rank 3, transport 2
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006f20
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 2 'mlx5_10
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Channel 14/0 : 7[3] -> 2[2] [send] via NET/IBext_v8/2(6)/GDRDMA
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 1 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 67 from local rank 0, transport 2
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 3 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006ea8
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 63 from local rank 2, transport 2
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Channel 01/0 : 4[0] -> 1[1] [send] via NET/IBext_v8/1(5)/GDRDMA
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 1 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 68 from local rank 0, transport 2
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 64 from local rank 3, transport 2
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006f20
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006cc8
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006d40
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Channel 05/0 : 4[0] -> 1[1] [send] via NET/IBext_v8/1(5)/GDRDMA
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 1 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Channel 03/0 : 6[2] -> 3[3] [send] via NET/IBext_v8/3(7)/GDRDMA
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 3 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 69 from local rank 0, transport 2
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0006f98
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Channel 03/0 : 2[2] -> 7[3] [receive] via NET/IBext_v8/3/GDRDMA
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 65 from local rank 2, transport 2
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Channel 09/0 : 4[0] -> 1[1] [send] via NET/IBext_v8/1(5)/GDRDMA
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO GPU Direct RDMA Enabled for GPU 6000 / HCA 1 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006db8
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 66 from local rank 3, transport 2
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 70 from local rank 0, transport 2
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006e30
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0007010
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Channel 07/0 : 6[2] -> 3[3] [send] via NET/IBext_v8/3(7)/GDRDMA
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 3 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 1 'mlx5_7
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Channel 13/0 : 4[0] -> 1[1] [send] via NET/IBext_v8/1(5)/GDRDMA
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Channel 07/0 : 2[2] -> 7[3] [receive] via NET/IBext_v8/3/GDRDMA
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 67 from local rank 2, transport 2
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006ea8
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 68 from local rank 3, transport 2
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006f20
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Channel 11/0 : 6[2] -> 3[3] [send] via NET/IBext_v8/3(7)/GDRDMA
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO GPU Direct RDMA Enabled for GPU a6000 / HCA 3 (distance 4 <= 7), read 1
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 73 from local rank 0, transport 0
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Channel 11/0 : 2[2] -> 7[3] [receive] via NET/IBext_v8/3/GDRDMA
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO GPU Direct RDMA Enabled for GPU c6000 / HCA 3 (distance 4 <= 7), read 0
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4007178
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 69 from local rank 2, transport 2
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 71 from local rank 1, transport 0
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78006f98
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0007088
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy recv connection 70 from local rank 3, transport 2
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78007010
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Channel 15/0 : 6[2] -> 3[3] [send] via NET/IBext_v8/3(7)/GDRDMA
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (nvidia-peermem) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB : GPU Direct RDMA (DMABUF) enabled for HCA 3 'mlx5_11
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Channel 15/0 : 2[2] -> 7[3] [receive] via NET/IBext_v8/3/GDRDMA
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 74 from local rank 0, transport 0
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Channel 07/0 : 7[3] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b40071f0
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Channel 01/0 : 6[2] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 72 from local rank 1, transport 0
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 71 from local rank 3, transport 0
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0007100
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 69 from local rank 2, transport 0
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78007088
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0006f98
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Channel 15/0 : 7[3] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 72 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78007100
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Channel 09/0 : 6[2] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 70 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0007010
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Channel 05/0 : 7[3] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 73 from local rank 1, transport 0
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 73 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e78007178
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0007178
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 75 from local rank 0, transport 0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 71 from local rank 2, transport 0
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b4007268
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0007088
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Channel 13/0 : 7[3] -> 6[2] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 74 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d00071f0
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO New proxy send connection 74 from local rank 3, transport 0
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected to proxy localRank 3 -> connection 0x7f2e780071f0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO New proxy recv connection 76 from local rank 0, transport 0
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7f50b40072e0
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy recv connection 72 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0007100
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 75 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0007268
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Channel 02/0 : 6[2] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 73 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0007178
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy recv connection 76 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d00072e0
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Channel 06/0 : 6[2] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Channel 06/0 : 5[1] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 74 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a00071f0
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 77 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d0007358
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Channel 10/0 : 6[2] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Channel 14/0 : 5[1] -> 4[0] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 75 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a0007268
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO New proxy send connection 78 from local rank 1, transport 0
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7f83d00073d0
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Channel 14/0 : 6[2] -> 5[1] via P2P/CUMEM
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO New proxy send connection 76 from local rank 2, transport 0
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected to proxy localRank 2 -> connection 0x7fd3a00072e0
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB: NCCL Dev 0 IbDev 0 Port 1 qpn 5525 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/367000AFFFF0000) fifoRkey=0x43b00 fifoLkey=0x43b00
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB: NCCL Dev 0 IbDev 0 Port 1 qpn 5528 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/367000AFFFF0000) fifoRkey=0x43f00 fifoLkey=0x43f00
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB: IbDev 0 Port 1 qpn 4694 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB: NCCL Dev 2 IbDev 2 Port 1 qpn 5477 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/369000AFFFF0000) fifoRkey=0x43b00 fifoLkey=0x43b00
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB: NCCL Dev 3 IbDev 3 Port 1 qpn 5473 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/36A000AFFFF0000) fifoRkey=0x43b00 fifoLkey=0x43b00
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB: NCCL Dev 3 IbDev 3 Port 1 qpn 5474 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/36A000AFFFF0000) fifoRkey=0x43c00 fifoLkey=0x43c00
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB: NCCL Dev 3 IbDev 3 Port 1 qpn 5475 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/36A000AFFFF0000) fifoRkey=0x43d00 fifoLkey=0x43d00
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB: NCCL Dev 3 IbDev 3 Port 1 qpn 5476 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/36A000AFFFF0000) fifoRkey=0x43e00 fifoLkey=0x43e00
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB: IbDev 2 Port 1 qpn 4799 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB: NCCL Dev 0 IbDev 0 Port 1 qpn 5531 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/367000AFFFF0000) fifoRkey=0x44700 fifoLkey=0x44700
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB: NCCL Dev 0 IbDev 0 Port 1 qpn 5534 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/367000AFFFF0000) fifoRkey=0x45100 fifoLkey=0x45100
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB: IbDev 0 Port 1 qpn 4697 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB: NCCL Dev 2 IbDev 2 Port 1 qpn 5484 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/369000AFFFF0000) fifoRkey=0x44900 fifoLkey=0x44900
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB: NCCL Dev 1 IbDev 1 Port 1 qpn 5529 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/368000AFFFF0000) fifoRkey=0x44200 fifoLkey=0x44200
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB: NCCL Dev 1 IbDev 1 Port 1 qpn 5530 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/368000AFFFF0000) fifoRkey=0x44300 fifoLkey=0x44300
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB: NCCL Dev 1 IbDev 1 Port 1 qpn 5531 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/368000AFFFF0000) fifoRkey=0x44400 fifoLkey=0x44400
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB: NCCL Dev 1 IbDev 1 Port 1 qpn 5532 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/368000AFFFF0000) fifoRkey=0x44500 fifoLkey=0x44500
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB: IbDev 1 Port 1 qpn 4685 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB: NCCL Dev 2 IbDev 2 Port 1 qpn 5485 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/369000AFFFF0000) fifoRkey=0x45000 fifoLkey=0x45000
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB: NCCL Dev 2 IbDev 2 Port 1 qpn 5486 mtu 5 query_ece={supported=1, vendor_id=0x15b3, options=0x30000002, comp_mask=0x0} GID 3 (0/369000AFFFF0000) fifoRkey=0x45100 fifoLkey=0x45100
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB: IbDev 1 Port 1 qpn 4687 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB: IbDev 0 Port 1 qpn 4700 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB: IbDev 1 Port 1 qpn 4689 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB: IbDev 3 Port 1 qpn 4723 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB: IbDev 2 Port 1 qpn 4804 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO NET/IB: IbDev 1 Port 1 qpn 4691 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB: IbDev 2 Port 1 qpn 4806 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO NET/IB: IbDev 0 Port 1 qpn 4702 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB: IbDev 3 Port 1 qpn 4725 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO NET/IB: IbDev 2 Port 1 qpn 4808 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB: IbDev 3 Port 1 qpn 4727 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO NET/IB: IbDev 3 Port 1 qpn 4729 set_ece={supported=1, vendor_id=0x15b3, options=0x0, comp_mask=0x0}
+pytorch-benchmark-opt-1:108:169 [0] NCCL INFO Connected all rings
+pytorch-benchmark-opt-1:109:171 [1] NCCL INFO Connected all rings
+pytorch-benchmark-opt-1:111:168 [3] NCCL INFO Connected all rings
+pytorch-benchmark-opt-1:110:170 [2] NCCL INFO Connected all rings
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:108:152 [0] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:109:157 [1] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO misc/socket.cc:47 -> 3
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO misc/socket.cc:58 -> 3
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO misc/socket.cc:781 -> 3
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO socketProgressOpt: abort called
+pytorch-benchmark-opt-1:110:155 [2] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-1:111:154 [3] NCCL INFO misc/socket.cc:832 -> 3
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO comm 0x7fe8360 rank 5 nranks 8 cudaDev 1 busId 26000 - Abort COMPLETE
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO NET/Plugin: Closing net plugin 'IBext_v8'
+pytorch-benchmark-opt-1:109:173 [1] NCCL INFO NET/Plugin: Closing collnet plugin 'SHARP'
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO comm 0x8b10ea0 rank 6 nranks 8 cudaDev 2 busId a6000 - Abort COMPLETE
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO NET/Plugin: Closing net plugin 'IBext_v8'
+pytorch-benchmark-opt-1:110:174 [2] NCCL INFO NET/Plugin: Closing collnet plugin 'SHARP'
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO comm 0x91a4e40 rank 4 nranks 8 cudaDev 0 busId 6000 - Abort COMPLETE
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO NET/Plugin: Closing net plugin 'IBext_v8'
+pytorch-benchmark-opt-1:108:172 [0] NCCL INFO NET/Plugin: Closing collnet plugin 'SHARP'
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO comm 0x8af1310 rank 7 nranks 8 cudaDev 3 busId c6000 - Abort COMPLETE
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO NET/Plugin: Closing net plugin 'IBext_v8'
+pytorch-benchmark-opt-1:111:175 [3] NCCL INFO NET/Plugin: Closing collnet plugin 'SHARP'
++ BENCHMARK_EXIT_CODE=0
++ echo '=== Benchmark completed with exit code: 0 ==='
+=== Benchmark completed with exit code: 0 ===
+SUCCESS: Optimized benchmark completed on pytorch-benchmark-opt-1
+Container will remain running. Use 'oc logs' to view results.
++ '[' 0 -eq 0 ']'
++ echo 'SUCCESS: Optimized benchmark completed on pytorch-benchmark-opt-1'
++ echo 'Container will remain running. Use '\''oc logs'\'' to view results.'
++ sleep infinity
