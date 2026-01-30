@@ -38,6 +38,7 @@ spec:
                 - NVIDIA-H100-80GB-HBM3
       containers:
       - name: pytorch-benchmark-opt
+        #image: hyungyo/torchtitan:uvm_multi_node
         image: nvcr.io/nvidia/pytorch:24.12-py3
         command: ["/bin/bash", "-c"]
         args:
@@ -135,14 +136,26 @@ spec:
             fieldRef:
               fieldPath: status.podIP
 
-#        - name: NCCL_IB_DISABLE
-#          value: "0"
-#        - name: NCCL_DMABUF_ENABLE
-#          value: "0"
-#        - name: NCCL_IB_MERGE_NICS
-#          value: "0"
-#        - name: NCCL_IB_QPS_PER_CONNECTION
-#          value: "2"
+        #- name: NCCL_IB_DISABLE
+        #  value: "0"
+        - name: NCCL_DMABUF_ENABLE
+          value: "0"
+        #- name: NCCL_IB_MERGE_NICS
+        #  value: "0"
+        #- name: NCCL_IB_QPS_PER_CONNECTION
+        #  value: "2"
+        #- name: NCCL_NET_GDR_LEVEL
+        #  value: "1"
+        #- name: NCCL_IB_PCI_RELAXED_ORDERING
+        #  value: "1"
+        #- name: NCCL_IB_GID_INDEX
+        #  value: "3"
+        #- name: NCCL_IGNORE_CPU_AFFINITY
+        #  value: "1"
+        #- name: NCCL_BUFFSIZE
+        #  value: "67108864"
+        #- name: NCCL_ALGO
+        #  value: "Ring"
         # === OPTIMIZATION 1: Increase NCCL Channels ===
         # More channels = better utilization of 4 NICs
         - name: NCCL_MIN_NCHANNELS
@@ -158,17 +171,16 @@ spec:
 
         # === OPTIMIZATION 3: Enhanced RDMA Settings ===
         - name: NCCL_NET_GDR_LEVEL
-          value: "5"  # Maximum GPU Direct RDMA
+          value: "5"  # Testing GDR Level 5
         - name: NCCL_NET_GDR_READ
           value: "1"  # Enable RDMA read operations
 
         # === OPTIMIZATION 4: InfiniBand/RoCE Optimizations ===
         - name: NCCL_IB_GID_INDEX
           value: "3"
-        - name: NCCL_IB_TC
+        - name: NCCL_IB_TC#
           value: "106"
         - name: NCCL_IB_TIMEOUT
-          value: "22"  # Increase IB timeout (default 18)
         - name: NCCL_IB_RETRY_CNT
           value: "7"   # Increase retry count
         - name: NCCL_IB_SL
@@ -180,10 +192,11 @@ spec:
         - name: NCCL_PROTO
           value: "Simple"  # Simple protocol (vs LL for large messages)
         - name: NCCL_ALGO
-          value: "Ring,Tree"  # Enable both algorithms
+          value: "Ring"  # Ring algorithm only
 
         # === OPTIMIZATION 6: Buffer and Chunk Sizes ===
         - name: NCCL_BUFFSIZE
+        #  value: "67108864"  # 8MB buffer (default 4MB)
           value: "8388608"  # 8MB buffer (default 4MB)
         - name: NCCL_NTHREADS
           value: "640"  # Increase CUDA threads per channel (default 512)
@@ -197,8 +210,7 @@ spec:
           value: "4"  # IPv4
         - name: NCCL_NSOCKS_PERTHREAD
           value: "8"  # Increase sockets per thread (default 4)
-        - name: NCCL_SOCKET_NTHREADS
-          value: "8"  # Increase socket threads (default 4)
+        #- name: NCCL_SOCKET_NTHREADS
 
         # === OPTIMIZATION 8: Collective Operation Tuning ===
         - name: NCCL_CROSS_NIC
@@ -218,7 +230,7 @@ spec:
         - name: NCCL_TOPO_FILE
           value: ""  # Let NCCL auto-detect
         - name: NCCL_IGNORE_CPU_AFFINITY
-          value: "0"  # Respect CPU affinity
+          value: "1"  # Respect CPU affinity
 
         # === Debugging (can disable for production) ===
         - name: NCCL_DEBUG
@@ -250,10 +262,8 @@ spec:
         volumeMounts:
         - name: benchmark-script
           mountPath: /benchmark
-        - name: shm
-          mountPath: /dev/shm
         securityContext:
-          privileged: true
+          privileged: false
           capabilities:
             add:
             - IPC_LOCK
@@ -262,10 +272,6 @@ spec:
       - name: benchmark-script
         configMap:
           name: pytorch-benchmark
-      - name: shm
-        emptyDir:
-          medium: Memory
-          sizeLimit: 32Gi
 ---
 apiVersion: v1
 kind: Service
