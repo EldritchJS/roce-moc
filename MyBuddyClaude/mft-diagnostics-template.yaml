@@ -50,33 +50,88 @@ objects:
 
         # Install dependencies and RDMA tools
         echo "Installing InfiniBand diagnostics and RDMA tools..."
-        apt-get install -y -qq wget pciutils infiniband-diags rdma-core libibverbs-dev ibverbs-utils
+        apt-get install -y -qq wget curl pciutils kmod infiniband-diags rdma-core libibverbs-dev ibverbs-utils
 
-        # Download and install MFT
-        MFT_VERSION="4.28.0-83"
-        MFT_PACKAGE="mft-${MFT_VERSION}-x86_64-deb.tgz"
-        MFT_URL="https://www.mellanox.com/downloads/MFT/${MFT_PACKAGE}"
+        # Download and install MFT from direct link
+        cd /tmp
 
-        echo "Downloading MFT ${MFT_VERSION}..."
-        wget -q ${MFT_URL} -O /tmp/${MFT_PACKAGE} || {
-          echo "Warning: Could not download MFT from official source"
-          echo "Trying alternate method..."
-          apt-get install -y -qq mft || echo "MFT not available via apt"
+        # Use direct download link that works
+        MFT_URL="https://content.mellanox.com/ofed/MLNX_OFED-24.10-1.1.4.0/MLNX_OFED_LINUX-24.10-1.1.4.0-ubuntu22.04-x86_64.tgz"
+        OFED_PACKAGE="MLNX_OFED_LINUX-24.10-1.1.4.0-ubuntu22.04-x86_64.tgz"
+
+        echo "Downloading Mellanox OFED (includes MFT)..."
+        wget --timeout=60 --tries=3 -O ${OFED_PACKAGE} ${MFT_URL} || {
+          echo "OFED download failed, trying MFT-only package..."
+
+          # Try MFT-only from web.archive.org or github mirror
+          MFT_VERSION="4.28.0-83"
+          MFT_PACKAGE="mft-${MFT_VERSION}-x86_64-deb.tgz"
+
+          wget --timeout=60 --tries=2 -O ${MFT_PACKAGE} \
+            "http://www.mellanox.com/downloads/MFT/mft-${MFT_VERSION}-x86_64-deb.tgz" || \
+          echo "All downloads failed, trying to use existing OFED..."
         }
 
-        if [ -f /tmp/${MFT_PACKAGE} ]; then
-          cd /tmp
-          tar xzf ${MFT_PACKAGE}
-          cd mft-${MFT_VERSION}-x86_64-deb
-          ./install.sh --without-dkms
+        # Check if we got OFED package
+        if [ -f "${OFED_PACKAGE}" ] && file ${OFED_PACKAGE} | grep -q "gzip compressed"; then
+          echo "Extracting OFED package..."
+          tar xzf ${OFED_PACKAGE}
+          OFED_DIR=$(ls -d MLNX_OFED_LINUX-* | head -1)
 
-          # Start MFT service
+          if [ -d "${OFED_DIR}" ]; then
+            # Extract just MFT from OFED
+            if [ -f "${OFED_DIR}/DEBS/mft_"*.deb ]; then
+              echo "Installing MFT from OFED..."
+              dpkg -i ${OFED_DIR}/DEBS/mft_*.deb || echo "MFT dpkg install had warnings"
+              dpkg -i ${OFED_DIR}/DEBS/kernel-mft-dkms_*.deb 2>/dev/null || echo "DKMS not needed"
+            fi
+          fi
+        elif [ -f "mft-*.tgz" ] && file mft-*.tgz | grep -q "gzip compressed"; then
+          echo "Extracting MFT package..."
+          tar xzf mft-*.tgz
+          cd mft-*-x86_64-deb 2>/dev/null || cd mft-*/
+
+          if [ -f "./install.sh" ]; then
+            echo "Installing MFT..."
+            ./install.sh --without-dkms
+          fi
+        fi
+
+        # Try to start MFT
+        echo "Starting MFT service..."
+        if [ -f /etc/init.d/mst ]; then
+          /etc/init.d/mst start
+          MFT_STATUS="✓ MFT installed and started"
+        elif command -v mst >/dev/null 2>&1; then
           mst start
-
-          echo "✓ MFT installed and started successfully"
+          MFT_STATUS="✓ MFT installed and started"
         else
-          echo "Warning: MFT installation failed, trying to start existing installation"
-          mst start 2>/dev/null || echo "MFT not available"
+          MFT_STATUS="✗ MFT not installed (downloads may have failed)"
+        fi
+
+        echo "${MFT_STATUS}"
+
+        # Verify installations and set PATH
+        echo ""
+        echo "=== Verifying Tool Availability ==="
+
+        # Find where tools were installed
+        MST_PATH=$(find /usr -name mst -type f 2>/dev/null | grep -E "bin/mst$" | head -1)
+        if [ -n "${MST_PATH}" ]; then
+          MST_DIR=$(dirname ${MST_PATH})
+          export PATH=${MST_DIR}:$PATH
+          echo "✓ MFT tools found in: ${MST_DIR}"
+        fi
+
+        # Check each tool
+        command -v mst >/dev/null 2>&1 && echo "✓ mst found: $(which mst)" || echo "✗ mst not found"
+        command -v mlxconfig >/dev/null 2>&1 && echo "✓ mlxconfig found: $(which mlxconfig)" || echo "✗ mlxconfig not found"
+        command -v ibdev2netdev >/dev/null 2>&1 && echo "✓ ibdev2netdev found: $(which ibdev2netdev)" || echo "✗ ibdev2netdev not found"
+        command -v ibstat >/dev/null 2>&1 && echo "✓ ibstat found: $(which ibstat)" || echo "✗ ibstat not found"
+
+        # Add to bashrc for interactive sessions
+        if [ -n "${MST_DIR}" ]; then
+          echo "export PATH=${MST_DIR}:\$PATH" >> /root/.bashrc
         fi
 
         # ====================================================
@@ -180,25 +235,54 @@ objects:
         echo "=========================================="
         echo ""
         echo "MFT (Mellanox Firmware Tools):"
-        echo "  mst status              - Show MST devices"
-        echo "  mlxconfig -d <dev> q    - Query firmware settings"
-        echo "  mlxconfig -d <dev> set  - Change firmware settings"
-        echo "  mstflint -d <dev> q     - Query firmware version"
+        echo "  mst status                      - Show MST devices"
+        echo "  mlxconfig -d <dev> q            - Query firmware settings"
+        echo "  mlxconfig -d <dev> set          - Change firmware settings"
+        echo "  mstflint -d <dev> q             - Query firmware version"
         echo ""
         echo "RDMA/InfiniBand Diagnostics:"
-        echo "  ibdev2netdev            - Map IB devices to network interfaces"
-        echo "  ibstat                  - Show IB port status"
-        echo "  ibv_devinfo             - Show detailed RDMA device info"
-        echo "  ibv_devinfo -v          - Verbose RDMA device info"
-        echo "  perfquery               - Query IB performance counters"
+        echo "  ibstat                          - Show IB port status and state"
+        echo "  ibv_devinfo                     - Show detailed RDMA device info"
+        echo "  ibv_devinfo -v                  - Verbose RDMA device info"
+        echo "  ibv_devices                     - List RDMA devices"
+        echo "  perfquery                       - Query IB performance counters"
         echo ""
-        echo "Example Commands:"
+        echo "Note: ibdev2netdev may not be available. Use these alternatives:"
+        echo "  Alternative 1 - List RDMA devices and network interfaces separately:"
+        echo "    ibv_devices                   - List RDMA devices (mlx5_6, mlx5_7, etc.)"
+        echo "    ip link show | grep mlx       - Show network interfaces"
+        echo "    ls -la /sys/class/net/        - List all network interfaces"
+        echo ""
+        echo "  Alternative 2 - Manual mapping:"
+        echo "    cat /sys/class/net/*/device/infiniband/*/node_desc"
+        echo "    for iface in \$(ls /sys/class/net/); do"
+        echo "      [ -d /sys/class/net/\$iface/device/infiniband ] && \\"
+        echo "      echo \"\$iface: \$(ls /sys/class/net/\$iface/device/infiniband/)\""
+        echo "    done"
+        echo ""
+        echo "Example Usage:"
+        echo "  # Access the pod"
         echo "  oc exec -it mft-diagnostics -n nccl-test -- bash"
-        echo "  # mst status"
-        echo "  # ibdev2netdev"
-        echo "  # mlxconfig -d /dev/mst/mt4129_pciconf0 query"
-        echo "  # mlxconfig -d /dev/mst/mt4129_pciconf0 query | grep NUM_OF_VFS"
-        echo "  # ibv_devinfo mlx5_6"
+        echo ""
+        echo "  # Check MST devices"
+        echo "  mst status"
+        echo ""
+        echo "  # Query NIC firmware (use PCI address from mst status)"
+        echo "  mlxconfig -d 03:00.0 query"
+        echo "  mlxconfig -d 03:00.0 query | grep NUM_OF_VFS"
+        echo ""
+        echo "  # Check RDMA devices and status"
+        echo "  ibv_devices"
+        echo "  ibv_devinfo mlx5_6"
+        echo "  ibstat"
+        echo ""
+        echo "  # Map RDMA devices to network interfaces"
+        echo "  for dev in /sys/class/infiniband/*; do"
+        echo "    dev_name=\$(basename \$dev)"
+        echo "    port_state=\$(cat \$dev/ports/1/state 2>/dev/null || echo 'N/A')"
+        echo "    netdev=\$(ls \$dev/device/net/ 2>/dev/null)"
+        echo "    echo \"\$dev_name => \$netdev (port state: \$port_state)\""
+        echo "  done"
         echo ""
         echo "=========================================="
         echo "Pod Ready - Container will remain running"
