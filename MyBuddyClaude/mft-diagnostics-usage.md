@@ -8,7 +8,8 @@ Deploy the diagnostics pod on a specific node:
 
 ```bash
 oc process -f mft-diagnostics-pod-template.yaml \
-  -p NODE_NAME=<NODE_NAME> | oc apply -f -
+  -p NODE_NAME=<NODE NAME> | oc apply -f -
+```
 
 **Startup time:** ~5 seconds (vs 2+ minutes with runtime installation)
 
@@ -61,24 +62,13 @@ mlxconfig -d 03:00.0 query | grep SRIOV_EN
 ibv_devices
 ```
 
-Output:
-```
-device            node GUID
-------            ----------------
-mlx5_0            387c7603009497a8
-mlx5_6            3ed0a8fffe836ae8
-mlx5_7            b249a0fffe11933b
-mlx5_8            f2259bfffe1632ad
-mlx5_9            2ae731fffedd120f
-```
-
 ### 4. Check RDMA Device Details
 ```bash
 # Detailed info for specific device
-ibv_devinfo mlx5_6
+ibv_devinfo mlx5_X
 
 # Verbose output
-ibv_devinfo -v mlx5_6
+ibv_devinfo -v mlx5_X
 ```
 
 ### 5. Check IB Port Status
@@ -86,7 +76,7 @@ ibv_devinfo -v mlx5_6
 ibstat
 
 # For specific device
-ibstat mlx5_6
+ibstat mlx5_X
 ```
 
 ### 6. Map RDMA Devices to Network Interfaces
@@ -146,25 +136,8 @@ mlxconfig -d 03:00.0 query | grep SRIOV_EN
 mlxconfig -d 03:00.0 query | grep NUM_OF_VFS
 ```
 
-## Mapping Reference
-
-| RDMA Device | Network Interface | Type | Status |
-|-------------|-------------------|------|--------|
-| mlx5_0 | eno2np0 | Physical | Active |
-| mlx5_1 | eno3np1 | Physical | Down |
-| mlx5_2 | eno6np0 | Physical | Active |
-| mlx5_3 | eno5np0 | Physical | Active |
-| mlx5_4 | eno8np0 | Physical | Active |
-| mlx5_5 | eno7np0 | Physical | Active |
-| mlx5_6 | (VF) | SR-IOV VF | Active |
-| mlx5_7 | (VF) | SR-IOV VF | Active |
-| mlx5_8 | (VF) | SR-IOV VF | Active |
-| mlx5_9 | (VF) | SR-IOV VF | Active |
-
-**Note:** mlx5_6, mlx5_7, mlx5_8, mlx5_9 are used in NCCL benchmarks via SR-IOV network attachments (net1, net2, net3, net4).
-
 ## Cleanup
 
 ```bash
-oc delete pod mft-diagnostics 
+oc delete pod mft-diagnostics -n nccl-test
 ```
