@@ -16,7 +16,7 @@
   
   To mess with Mellanox firmware settings:
     
-    oc process -f /Users/jschless/taj/cairo/mft-diagnostics-template.yaml  -p NODE_NAME=<NODE NAME> | oc apply -f -
+    oc process -f mft-diagnostics-template.yaml  -p NODE_NAME=<NODE NAME> | oc apply -f -
     
   Once the pod is running, you can exec into it:
     
